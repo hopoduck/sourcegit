@@ -43,7 +43,7 @@
       <Color x:Key="Color.Popup">#FF2B2B2B</Color>
       <Color x:Key="Color.PopupBorder">#FF393939</Color>
       <Color x:Key="Color.Contents">#FF1C1C1C</Color>
-      <Color x:Key="Color.Badge">#FF8F8F8F</Color>
+      <Color x:Key="Color.Badge">#FF454545</Color>
       <Color x:Key="Color.BadgeFG">#FFE0E0E0</Color>
       <Color x:Key="Color.Conflict">#FFFAFAD2</Color>
       <Color x:Key="Color.Conflict.Foreground">#FF252525</Color>

@@ -281,7 +281,7 @@
                 </TextBox.InnerRightContent>
               </TextBox>
 
-              <Grid Grid.Row="1" x:Name="LeftSidebarGroups" Margin="0,4,0,0" RowDefinitions="28,Auto,28,Auto,28,Auto,28,Auto,28,Auto" SizeChanged="OnLeftSidebarSizeChanged">
+              <Grid Grid.Row="1" x:Name="LeftSidebarGroups" Margin="0,4,0,0" RowDefinitions="22,Auto,22,Auto,22,Auto,22,Auto,22,Auto" SizeChanged="OnLeftSidebarSizeChanged">
                 <!-- Local Branches -->
                 <ToggleButton Grid.Row="0" Classes="group_expander" IsChecked="{Binding IsLocalBranchGroupExpanded, Mode=TwoWay}">
                   <Grid ColumnDefinitions="16,*,Auto">
@@ -483,7 +483,7 @@
                   </ListBox.Styles>
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="vm:Worktree">
-                      <Border Height="24"
+                      <Border Height="22"
                               Background="Transparent"
                               DoubleTapped="OnWorktreeDoubleTapped"
                               ContextRequested="OnWorktreeContextRequested"

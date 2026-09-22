@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -127,7 +128,13 @@ namespace SourceGit.Views
         {
             var timestamp = Timestamp;
             if (ShowAsDateTime)
-                return Models.DateTimeFormat.Format(timestamp);
+            {
+                // Commit list only: date in the user's chosen format, time without seconds.
+                var time = DateTime.UnixEpoch.AddSeconds(timestamp).ToLocalTime();
+                var date = Models.DateTimeFormat.Format(time, true);
+                var clock = time.ToString(Use24Hours ? "HH\\:mm" : "hh\\:mm tt", CultureInfo.CurrentCulture);
+                return $"{date} {clock}";
+            }
 
             var now = DateTime.Now;
             var localTime = DateTime.UnixEpoch.AddSeconds(timestamp).ToLocalTime();

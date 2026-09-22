@@ -1075,4 +1075,14 @@
   <x:String x:Key="Text.Worktree.Remove" xml:space="preserve">Remove</x:String>
   <x:String x:Key="Text.Worktree.Unlock" xml:space="preserve">Unlock</x:String>
   <x:String x:Key="Text.Yes" xml:space="preserve">YES</x:String>
+  <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">Branch</x:String>
+  <x:String x:Key="Text.Toolbar.Fetch" xml:space="preserve">Fetch</x:String>
+  <x:String x:Key="Text.Toolbar.Logs" xml:space="preserve">Logs</x:String>
+  <x:String x:Key="Text.Toolbar.Open" xml:space="preserve">Open</x:String>
+  <x:String x:Key="Text.Toolbar.Patch" xml:space="preserve">Patch</x:String>
+  <x:String x:Key="Text.Toolbar.Pull" xml:space="preserve">Pull</x:String>
+  <x:String x:Key="Text.Toolbar.Push" xml:space="preserve">Push</x:String>
+  <x:String x:Key="Text.Toolbar.Stash" xml:space="preserve">Stash</x:String>
+  <x:String x:Key="Text.Toolbar.Statistics" xml:space="preserve">Stats</x:String>
+  <x:String x:Key="Text.Toolbar.Tools" xml:space="preserve">Tools</x:String>
 </ResourceDictionary>

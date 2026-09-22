@@ -12,39 +12,7 @@ namespace SourceGit.Views
 {
     public class LauncherTabSizeBox : Border
     {
-        public static readonly DirectProperty<LauncherTabSizeBox, bool> UseFixedWidthProperty =
-            AvaloniaProperty.RegisterDirect<LauncherTabSizeBox, bool>(
-                nameof(UseFixedWidth),
-                static o => o.UseFixedWidth,
-                static (o, v) => o.UseFixedWidth = v);
-
-        public bool UseFixedWidth
-        {
-            get => _useFixedWidth;
-            set => SetAndRaise(UseFixedWidthProperty, ref _useFixedWidth, value);
-        }
-
-        public LauncherTabSizeBox()
-        {
-            Width = 200;
-        }
-
         protected override Type StyleKeyOverride => typeof(Border);
-
-        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-        {
-            base.OnPropertyChanged(change);
-
-            if (change.Property == UseFixedWidthProperty)
-            {
-                if (_useFixedWidth)
-                    Width = 200;
-                else
-                    Width = double.NaN;
-            }
-        }
-
-        private bool _useFixedWidth = true;
     }
 
     public partial class LauncherTabBar : UserControl
@@ -58,6 +26,17 @@ namespace SourceGit.Views
         {
             get => _isScrollButtonVisible;
             set => SetAndRaise(IsScrollButtonVisibleProperty, ref _isScrollButtonVisible, value);
+        }
+
+        public static readonly DirectProperty<LauncherTabBar, double> TabWidthProperty =
+            AvaloniaProperty.RegisterDirect<LauncherTabBar, double>(
+                nameof(TabWidth),
+                static o => o.TabWidth);
+
+        public double TabWidth
+        {
+            get => _tabWidth;
+            private set => SetAndRaise(TabWidthProperty, ref _tabWidth, value);
         }
 
         public LauncherTabBar()
@@ -169,6 +148,12 @@ namespace SourceGit.Views
                 InvalidateVisual();
         }
 
+        protected override void OnSizeChanged(SizeChangedEventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateTabWidth();
+        }
+
         private void ScrollTabs(object _, PointerWheelEventArgs e)
         {
             if (Math.Abs(e.Delta.X) < Math.Abs(e.Delta.Y))
@@ -203,8 +188,24 @@ namespace SourceGit.Views
 
         private void OnTabsLayoutUpdated(object _1, EventArgs _2)
         {
-            IsScrollButtonVisible = LauncherTabsScroller.Extent.Width > LauncherTabsScroller.Viewport.Width;
+            UpdateTabWidth();
             InvalidateVisual();
+        }
+
+        private void UpdateTabWidth()
+        {
+            var count = LauncherTabsList.ItemCount;
+            if (count <= 0 || Bounds.Width <= 0)
+                return;
+
+            // 12 = tabs ScrollViewer margin (6 + 6); 32 = "+" button incl. its margins (8 + 16 + 8).
+            var available = Bounds.Width - 12 - 32;
+            var width = Math.Clamp(Math.Floor(available / count), MinTabWidth, MaxTabWidth);
+            TabWidth = width;
+
+            // Judge overflow against the layout without scroll buttons. The scroll buttons are wider than
+            // the "+" button, so measuring the current viewport would keep them visible once shown.
+            IsScrollButtonVisible = width * count > available;
         }
 
         private void OnTabsSelectionChanged(object _1, SelectionChangedEventArgs _2)
@@ -412,7 +413,11 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
+        private const double MinTabWidth = 72;
+        private const double MaxTabWidth = 200;
+
         private bool _isScrollButtonVisible = false;
+        private double _tabWidth = MaxTabWidth;
         private readonly Vector _scrollStep = new(64, 0);
         private PointerPressedEventArgs _pressedTabEvent = null;
         private bool _startDragTab = false;

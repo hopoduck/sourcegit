@@ -13,13 +13,13 @@
     <DataTemplate DataType="m:Commit">
       <StackPanel Orientation="Vertical">
         <!-- Author & Committer -->
-        <UniformGrid Rows="1" Margin="0,8">
+        <UniformGrid Rows="1" Margin="0,6">
           <!-- Author -->
-          <Grid ColumnDefinitions="96,*">
-            <v:Avatar Grid.Column="0" Width="64" Height="64" HorizontalAlignment="Right" User="{Binding Author}"/>
-            <StackPanel Grid.Column="1" Margin="16,0,4,0" Orientation="Vertical">
+          <Grid ColumnDefinitions="56,*">
+            <v:Avatar Grid.Column="0" Width="40" Height="40" HorizontalAlignment="Right" User="{Binding Author}"/>
+            <StackPanel Grid.Column="1" Margin="12,0,4,0" Orientation="Vertical">
               <TextBlock Classes="group_header_label" Text="{DynamicResource Text.CommitDetail.Info.Author}"/>
-              <Border Margin="0,10,0,8" Background="Transparent" ToolTip.Tip="{Binding Author}" Tag="{Binding Author}" ContextRequested="OnUserContextRequested">
+              <Border Margin="0,2,0,2" Background="Transparent" ToolTip.Tip="{Binding Author}" Tag="{Binding Author}" ContextRequested="OnUserContextRequested">
                 <TextBlock Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis">
                   <Run Text="{Binding Author.Name, Mode=OneWay}" Foreground="{DynamicResource Brush.FG1}"/>
                   <Run Text="{Binding Author.Email, Mode=OneWay}"/>
@@ -35,11 +35,11 @@
           </Grid>
 
           <!-- Committer -->
-          <Grid ColumnDefinitions="96,*" IsVisible="{Binding IsCommitterVisible}">
-            <v:Avatar Grid.Column="0" Width="64" Height="64" HorizontalAlignment="Right" User="{Binding Committer}"/>
-            <StackPanel Grid.Column="1" Margin="16,0,4,0" Orientation="Vertical">
+          <Grid ColumnDefinitions="56,*" IsVisible="{Binding IsCommitterVisible}">
+            <v:Avatar Grid.Column="0" Width="40" Height="40" HorizontalAlignment="Right" User="{Binding Committer}"/>
+            <StackPanel Grid.Column="1" Margin="12,0,4,0" Orientation="Vertical">
               <TextBlock Classes="group_header_label" Text="{DynamicResource Text.CommitDetail.Info.Committer}"/>
-              <Border Margin="0,10,0,8" Background="Transparent" ToolTip.Tip="{Binding Committer}" Tag="{Binding Committer}" ContextRequested="OnUserContextRequested">
+              <Border Margin="0,2,0,2" Background="Transparent" ToolTip.Tip="{Binding Committer}" Tag="{Binding Committer}" ContextRequested="OnUserContextRequested">
                 <TextBlock Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis">
                   <Run Text="{Binding Committer.Name, Mode=OneWay}" Foreground="{DynamicResource Brush.FG1}"/>
                   <Run Text="{Binding Committer.Email, Mode=OneWay}"/>
@@ -55,14 +55,11 @@
           </Grid>
         </UniformGrid>
 
-        <!-- Line -->
-        <Rectangle Height=".65" Margin="8,8,0,8" Fill="{DynamicResource Brush.Border2}" VerticalAlignment="Center"/>
-
         <!-- Base Information -->
-        <Grid RowDefinitions="24,Auto,Auto,Auto" ColumnDefinitions="96,*">
+        <Grid RowDefinitions="22,Auto" ColumnDefinitions="56,*" Margin="0,4,0,0">
           <!-- SHA -->
-          <TextBlock Grid.Row="0" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,4,0,0" Text="{DynamicResource Text.CommitDetail.Info.SHA}" />
-          <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Height="24">
+          <TextBlock Grid.Row="0" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,3,0,0" Text="{DynamicResource Text.CommitDetail.Info.SHA}" />
+          <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Height="22">
             <TextBlock Text="{Binding SHA}" Margin="12,0,4,0" FontFamily="{DynamicResource Fonts.Monospace}" VerticalAlignment="Center"/>
 
             <v:CopyButton Width="24" Cursor="Hand" CopyText="{Binding SHA}" ToolTip.Tip="{DynamicResource Text.Copy}"/>
@@ -98,8 +95,8 @@
           </StackPanel>
 
           <!-- PARENTS -->
-          <TextBlock Grid.Row="1" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,4,0,0" Text="{DynamicResource Text.CommitDetail.Info.Parents}" IsVisible="{Binding Parents, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}"/>
-          <ItemsControl Grid.Row="1" Grid.Column="1" Height="24" Margin="12,0,0,0" ItemsSource="{Binding Parents}" IsVisible="{Binding Parents, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}">
+          <TextBlock Grid.Row="1" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,3,0,0" Text="{DynamicResource Text.CommitDetail.Info.Parents}" IsVisible="{Binding Parents, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}"/>
+          <ItemsControl Grid.Row="1" Grid.Column="1" Height="22" Margin="12,0,0,0" ItemsSource="{Binding Parents}" IsVisible="{Binding Parents, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
@@ -145,71 +142,61 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-
-          <!-- REFS -->
-          <TextBlock Grid.Row="2" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,4,0,0" Text="{DynamicResource Text.CommitDetail.Info.Refs}" IsVisible="{Binding HasDecorators}"/>
-          <Border Grid.Row="2" Grid.Column="1" Margin="12,0,0,0" MinHeight="24" IsVisible="{Binding HasDecorators}">
-            <v:CommitRefsPresenter Foreground="{DynamicResource Brush.FG1}"
-                                   FontSize="12"
-                                   AllowWrap="True"
-                                   Margin="0,4,0,0"
-                                   UseGraphColor="False"
-                                   PointerReleased="OnCommitRefsPresenterPointerReleased"/>
-          </Border>
-
-          <!-- Messages -->
-          <TextBlock Grid.Row="3" Grid.Column="0" Classes="info_label" VerticalAlignment="Top" Margin="0,4,0,0" Text="{DynamicResource Text.CommitDetail.Info.Message}" />
-          <v:CommitMessagePresenter Grid.Row="3" Grid.Column="1"
-                                    Margin="12,4,0,0"
-                                    Foreground="{DynamicResource Brush.FG1}"
-                                    FullMessage="{Binding #ThisControl.FullMessage}"
-                                    HorizontalAlignment="Stretch"
-                                    TextWrapping="Wrap">
-            <ToolTip.IsOpen>
-              <MultiBinding Converter="{x:Static BoolConverters.And}">
-                <Binding Path="$self.IsPointerOver"/>
-                <Binding Path="$self.(ToolTip.Tip)" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-              </MultiBinding>
-            </ToolTip.IsOpen>
-
-            <v:CommitMessagePresenter.ContextFlyout>
-              <MenuFlyout Placement="Bottom">
-                <MenuItem Header="{DynamicResource Text.Copy}"
-                          Command="{Binding $parent[SelectableTextBlock].Copy}"
-                          IsEnabled="{Binding $parent[SelectableTextBlock].CanCopy}"
-                          InputGesture="{x:Static TextBox.CopyGesture}">
-                  <MenuItem.Icon>
-                    <Path Width="11" Height="11" Data="{StaticResource Icons.Copy}" VerticalAlignment="Center"/>
-                  </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="{DynamicResource Text.CopyAllText}"
-                          Click="OnCopyAllCommitMessage">
-                  <MenuItem.Icon>
-                    <Path Width="11" Height="11" Data="{StaticResource Icons.Copy}" VerticalAlignment="Center"/>
-                  </MenuItem.Icon>
-                </MenuItem>
-              </MenuFlyout>
-            </v:CommitMessagePresenter.ContextFlyout>
-
-            <v:CommitMessagePresenter.DataTemplates>
-              <DataTemplate DataType="m:Commit">
-                <StackPanel MinWidth="400" Orientation="Vertical">
-                  <Grid ColumnDefinitions="Auto,*,Auto">
-                    <v:Avatar Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" IsHitTestVisible="False" User="{Binding Author}"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Author.Name}" Margin="8,0,0,0"/>
-                    <v:DateTimePresenter Grid.Column="2"
-                                         Margin="8,0,0,0"
-                                         Timestamp="{Binding CommitterTime}"
-                                         Foreground="{DynamicResource Brush.FG2}"/>
-                  </Grid>
-
-                  <TextBlock Margin="0,8,0,0" Text="{Binding Subject}" TextWrapping="Wrap"/>
-                </StackPanel>
-              </DataTemplate>
-            </v:CommitMessagePresenter.DataTemplates>
-          </v:CommitMessagePresenter>
         </Grid>
+
+        <!-- Line -->
+        <Rectangle Height=".65" Margin="8,8,0,8" Fill="{DynamicResource Brush.Border2}" VerticalAlignment="Center"/>
+
+        <!-- Message -->
+        <v:CommitMessagePresenter Margin="68,0,8,0"
+                                  Foreground="{DynamicResource Brush.FG1}"
+                                  FullMessage="{Binding #ThisControl.FullMessage}"
+                                  HorizontalAlignment="Stretch"
+                                  TextWrapping="Wrap">
+          <ToolTip.IsOpen>
+            <MultiBinding Converter="{x:Static BoolConverters.And}">
+              <Binding Path="$self.IsPointerOver"/>
+              <Binding Path="$self.(ToolTip.Tip)" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+            </MultiBinding>
+          </ToolTip.IsOpen>
+
+          <v:CommitMessagePresenter.ContextFlyout>
+            <MenuFlyout Placement="Bottom">
+              <MenuItem Header="{DynamicResource Text.Copy}"
+                        Command="{Binding $parent[SelectableTextBlock].Copy}"
+                        IsEnabled="{Binding $parent[SelectableTextBlock].CanCopy}"
+                        InputGesture="{x:Static TextBox.CopyGesture}">
+                <MenuItem.Icon>
+                  <Path Width="11" Height="11" Data="{StaticResource Icons.Copy}" VerticalAlignment="Center"/>
+                </MenuItem.Icon>
+              </MenuItem>
+
+              <MenuItem Header="{DynamicResource Text.CopyAllText}"
+                        Click="OnCopyAllCommitMessage">
+                <MenuItem.Icon>
+                  <Path Width="11" Height="11" Data="{StaticResource Icons.Copy}" VerticalAlignment="Center"/>
+                </MenuItem.Icon>
+              </MenuItem>
+            </MenuFlyout>
+          </v:CommitMessagePresenter.ContextFlyout>
+
+          <v:CommitMessagePresenter.DataTemplates>
+            <DataTemplate DataType="m:Commit">
+              <StackPanel MinWidth="400" Orientation="Vertical">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <v:Avatar Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" IsHitTestVisible="False" User="{Binding Author}"/>
+                  <TextBlock Grid.Column="1" Text="{Binding Author.Name}" Margin="8,0,0,0"/>
+                  <v:DateTimePresenter Grid.Column="2"
+                                       Margin="8,0,0,0"
+                                       Timestamp="{Binding CommitterTime}"
+                                       Foreground="{DynamicResource Brush.FG2}"/>
+                </Grid>
+
+                <TextBlock Margin="0,8,0,0" Text="{Binding Subject}" TextWrapping="Wrap"/>
+              </StackPanel>
+            </DataTemplate>
+          </v:CommitMessagePresenter.DataTemplates>
+        </v:CommitMessagePresenter>
       </StackPanel>
     </DataTemplate>
   </UserControl.DataTemplates>

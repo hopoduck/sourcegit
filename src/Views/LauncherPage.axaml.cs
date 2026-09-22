@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 
 namespace SourceGit.Views
 {
@@ -79,11 +78,6 @@ namespace SourceGit.Views
                 page.Notifications.Remove(notice);
 
             e.Handled = true;
-        }
-
-        private void OnToolBarPointerPressed(object sender, PointerPressedEventArgs e)
-        {
-            this.FindAncestorOfType<ChromelessWindow>()?.BeginMoveWindow(sender, e);
         }
     }
 }

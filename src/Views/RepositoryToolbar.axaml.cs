@@ -234,222 +234,202 @@ namespace SourceGit.Views
             }
         }
 
-        private void OpenGitFlowMenu(object sender, RoutedEventArgs ev)
+        private void FillGitFlowMenu(ItemCollection items, ViewModels.Repository repo)
         {
-            if (DataContext is ViewModels.Repository repo && sender is Control control)
+            if (repo.IsGitFlowEnabled())
             {
-                var menu = new ContextMenu();
-                menu.Placement = PlacementMode.BottomEdgeAlignedLeft;
-
-                if (repo.IsGitFlowEnabled())
+                var startFeature = new MenuItem();
+                startFeature.Header = App.Text("GitFlow.StartFeature");
+                startFeature.Click += (_, e) =>
                 {
-                    var startFeature = new MenuItem();
-                    startFeature.Header = App.Text("GitFlow.StartFeature");
-                    startFeature.Click += (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                            repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Feature));
-                        e.Handled = true;
-                    };
+                    if (repo.CanCreatePopup())
+                        repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Feature));
+                    e.Handled = true;
+                };
 
-                    var startRelease = new MenuItem();
-                    startRelease.Header = App.Text("GitFlow.StartRelease");
-                    startRelease.Click += (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                            repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Release));
-                        e.Handled = true;
-                    };
-
-                    var startHotfix = new MenuItem();
-                    startHotfix.Header = App.Text("GitFlow.StartHotfix");
-                    startHotfix.Click += (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                            repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Hotfix));
-                        e.Handled = true;
-                    };
-
-                    menu.Items.Add(startFeature);
-                    menu.Items.Add(startRelease);
-                    menu.Items.Add(startHotfix);
-
-                    var type = repo.CurrentBranch != null ? repo.GetGitFlowType(repo.CurrentBranch) : Models.GitFlowBranchType.None;
-                    if (type != Models.GitFlowBranchType.None)
-                    {
-                        var finish = new MenuItem();
-                        finish.Header = App.Text("GitFlow.Finish", repo.CurrentBranch.Name);
-                        finish.Icon = this.CreateMenuIcon("Icons.GitFlow.Finish");
-                        finish.Click += (_, e) =>
-                        {
-                            if (repo.CanCreatePopup())
-                                repo.ShowPopup(new ViewModels.GitFlowFinish(repo, repo.CurrentBranch, type));
-                            e.Handled = true;
-                        };
-                        menu.Items.Add(new MenuItem() { Header = "-" });
-                        menu.Items.Add(finish);
-                    }
-                }
-                else
+                var startRelease = new MenuItem();
+                startRelease.Header = App.Text("GitFlow.StartRelease");
+                startRelease.Click += (_, e) =>
                 {
-                    var init = new MenuItem();
-                    init.Header = App.Text("GitFlow.Init");
-                    init.Icon = this.CreateMenuIcon("Icons.Init");
-                    init.Click += (_, e) =>
-                    {
-                        if (repo.CurrentBranch == null)
-                            repo.SendNotification("Git flow init failed: No branch found!!!", true);
-                        else if (repo.CanCreatePopup())
-                            repo.ShowPopup(new ViewModels.InitGitFlow(repo));
+                    if (repo.CanCreatePopup())
+                        repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Release));
+                    e.Handled = true;
+                };
 
+                var startHotfix = new MenuItem();
+                startHotfix.Header = App.Text("GitFlow.StartHotfix");
+                startHotfix.Click += (_, e) =>
+                {
+                    if (repo.CanCreatePopup())
+                        repo.ShowPopup(new ViewModels.GitFlowStart(repo, Models.GitFlowBranchType.Hotfix));
+                    e.Handled = true;
+                };
+
+                items.Add(startFeature);
+                items.Add(startRelease);
+                items.Add(startHotfix);
+
+                var type = repo.CurrentBranch != null ? repo.GetGitFlowType(repo.CurrentBranch) : Models.GitFlowBranchType.None;
+                if (type != Models.GitFlowBranchType.None)
+                {
+                    var finish = new MenuItem();
+                    finish.Header = App.Text("GitFlow.Finish", repo.CurrentBranch.Name);
+                    finish.Icon = this.CreateMenuIcon("Icons.GitFlow.Finish");
+                    finish.Click += (_, e) =>
+                    {
+                        if (repo.CanCreatePopup())
+                            repo.ShowPopup(new ViewModels.GitFlowFinish(repo, repo.CurrentBranch, type));
                         e.Handled = true;
                     };
-                    menu.Items.Add(init);
+                    items.Add(new MenuItem() { Header = "-" });
+                    items.Add(finish);
                 }
-
-                menu.Open(control);
             }
+            else
+            {
+                var init = new MenuItem();
+                init.Header = App.Text("GitFlow.Init");
+                init.Icon = this.CreateMenuIcon("Icons.Init");
+                init.Click += (_, e) =>
+                {
+                    if (repo.CurrentBranch == null)
+                        repo.SendNotification("Git flow init failed: No branch found!!!", true);
+                    else if (repo.CanCreatePopup())
+                        repo.ShowPopup(new ViewModels.InitGitFlow(repo));
 
-            ev.Handled = true;
+                    e.Handled = true;
+                };
+                items.Add(init);
+            }
         }
 
-        private void OpenGitLFSMenu(object sender, RoutedEventArgs ev)
+        private void FillGitLFSMenu(ItemCollection items, ViewModels.Repository repo)
         {
-            if (DataContext is ViewModels.Repository repo && sender is Control control)
+            if (repo.IsLFSEnabled())
             {
-                var menu = new ContextMenu();
-                menu.Placement = PlacementMode.BottomEdgeAlignedLeft;
-
-                if (repo.IsLFSEnabled())
+                var addPattern = new MenuItem();
+                addPattern.Header = App.Text("GitLFS.AddTrackPattern");
+                addPattern.Icon = this.CreateMenuIcon("Icons.File.Add");
+                addPattern.Click += (_, e) =>
                 {
-                    var addPattern = new MenuItem();
-                    addPattern.Header = App.Text("GitLFS.AddTrackPattern");
-                    addPattern.Icon = this.CreateMenuIcon("Icons.File.Add");
-                    addPattern.Click += (_, e) =>
+                    if (repo.CanCreatePopup())
+                        repo.ShowPopup(new ViewModels.LFSTrackCustomPattern(repo));
+
+                    e.Handled = true;
+                };
+                items.Add(addPattern);
+                items.Add(new MenuItem() { Header = "-" });
+
+                var fetch = new MenuItem();
+                fetch.Header = App.Text("GitLFS.Fetch");
+                fetch.Icon = this.CreateMenuIcon("Icons.Fetch");
+                fetch.IsEnabled = repo.Remotes.Count > 0;
+                fetch.Click += async (_, e) =>
+                {
+                    if (repo.CanCreatePopup())
                     {
-                        if (repo.CanCreatePopup())
-                            repo.ShowPopup(new ViewModels.LFSTrackCustomPattern(repo));
-
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(addPattern);
-                    menu.Items.Add(new MenuItem() { Header = "-" });
-
-                    var fetch = new MenuItem();
-                    fetch.Header = App.Text("GitLFS.Fetch");
-                    fetch.Icon = this.CreateMenuIcon("Icons.Fetch");
-                    fetch.IsEnabled = repo.Remotes.Count > 0;
-                    fetch.Click += async (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                        {
-                            if (repo.Remotes.Count == 1)
-                                await repo.ShowAndStartPopupAsync(new ViewModels.LFSFetch(repo));
-                            else
-                                repo.ShowPopup(new ViewModels.LFSFetch(repo));
-                        }
-
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(fetch);
-
-                    var pull = new MenuItem();
-                    pull.Header = App.Text("GitLFS.Pull");
-                    pull.Icon = this.CreateMenuIcon("Icons.Pull");
-                    pull.IsEnabled = repo.Remotes.Count > 0;
-                    pull.Click += async (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                        {
-                            if (repo.Remotes.Count == 1)
-                                await repo.ShowAndStartPopupAsync(new ViewModels.LFSPull(repo));
-                            else
-                                repo.ShowPopup(new ViewModels.LFSPull(repo));
-                        }
-
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(pull);
-
-                    var push = new MenuItem();
-                    push.Header = App.Text("GitLFS.Push");
-                    push.Icon = this.CreateMenuIcon("Icons.Push");
-                    push.IsEnabled = repo.Remotes.Count > 0;
-                    push.Click += async (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                        {
-                            if (repo.Remotes.Count == 1)
-                                await repo.ShowAndStartPopupAsync(new ViewModels.LFSPush(repo));
-                            else
-                                repo.ShowPopup(new ViewModels.LFSPush(repo));
-                        }
-
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(push);
-
-                    var prune = new MenuItem();
-                    prune.Header = App.Text("GitLFS.Prune");
-                    prune.Icon = this.CreateMenuIcon("Icons.Clean");
-                    prune.Click += async (_, e) =>
-                    {
-                        if (repo.CanCreatePopup())
-                            await repo.ShowAndStartPopupAsync(new ViewModels.LFSPrune(repo));
-
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(new MenuItem() { Header = "-" });
-                    menu.Items.Add(prune);
-
-                    var locks = new MenuItem();
-                    locks.Header = App.Text("GitLFS.Locks");
-                    locks.Icon = this.CreateMenuIcon("Icons.Lock");
-                    locks.IsEnabled = repo.Remotes.Count > 0;
-                    if (repo.Remotes.Count == 1)
-                    {
-                        locks.Click += async (_, e) =>
-                        {
-                            await this.ShowDialogAsync(new ViewModels.LFSLocks(repo, repo.Remotes[0].Name));
-                            e.Handled = true;
-                        };
-                    }
-                    else
-                    {
-                        foreach (var remote in repo.Remotes)
-                        {
-                            var remoteName = remote.Name;
-                            var lockRemote = new MenuItem();
-                            lockRemote.Header = remoteName;
-                            lockRemote.Click += async (_, e) =>
-                            {
-                                await this.ShowDialogAsync(new ViewModels.LFSLocks(repo, remoteName));
-                                e.Handled = true;
-                            };
-                            locks.Items.Add(lockRemote);
-                        }
+                        if (repo.Remotes.Count == 1)
+                            await repo.ShowAndStartPopupAsync(new ViewModels.LFSFetch(repo));
+                        else
+                            repo.ShowPopup(new ViewModels.LFSFetch(repo));
                     }
 
-                    menu.Items.Add(new MenuItem() { Header = "-" });
-                    menu.Items.Add(locks);
+                    e.Handled = true;
+                };
+                items.Add(fetch);
+
+                var pull = new MenuItem();
+                pull.Header = App.Text("GitLFS.Pull");
+                pull.Icon = this.CreateMenuIcon("Icons.Pull");
+                pull.IsEnabled = repo.Remotes.Count > 0;
+                pull.Click += async (_, e) =>
+                {
+                    if (repo.CanCreatePopup())
+                    {
+                        if (repo.Remotes.Count == 1)
+                            await repo.ShowAndStartPopupAsync(new ViewModels.LFSPull(repo));
+                        else
+                            repo.ShowPopup(new ViewModels.LFSPull(repo));
+                    }
+
+                    e.Handled = true;
+                };
+                items.Add(pull);
+
+                var push = new MenuItem();
+                push.Header = App.Text("GitLFS.Push");
+                push.Icon = this.CreateMenuIcon("Icons.Push");
+                push.IsEnabled = repo.Remotes.Count > 0;
+                push.Click += async (_, e) =>
+                {
+                    if (repo.CanCreatePopup())
+                    {
+                        if (repo.Remotes.Count == 1)
+                            await repo.ShowAndStartPopupAsync(new ViewModels.LFSPush(repo));
+                        else
+                            repo.ShowPopup(new ViewModels.LFSPush(repo));
+                    }
+
+                    e.Handled = true;
+                };
+                items.Add(push);
+
+                var prune = new MenuItem();
+                prune.Header = App.Text("GitLFS.Prune");
+                prune.Icon = this.CreateMenuIcon("Icons.Clean");
+                prune.Click += async (_, e) =>
+                {
+                    if (repo.CanCreatePopup())
+                        await repo.ShowAndStartPopupAsync(new ViewModels.LFSPrune(repo));
+
+                    e.Handled = true;
+                };
+                items.Add(new MenuItem() { Header = "-" });
+                items.Add(prune);
+
+                var locks = new MenuItem();
+                locks.Header = App.Text("GitLFS.Locks");
+                locks.Icon = this.CreateMenuIcon("Icons.Lock");
+                locks.IsEnabled = repo.Remotes.Count > 0;
+                if (repo.Remotes.Count == 1)
+                {
+                    locks.Click += async (_, e) =>
+                    {
+                        await this.ShowDialogAsync(new ViewModels.LFSLocks(repo, repo.Remotes[0].Name));
+                        e.Handled = true;
+                    };
                 }
                 else
                 {
-                    var install = new MenuItem();
-                    install.Header = App.Text("GitLFS.Install");
-                    install.Icon = this.CreateMenuIcon("Icons.Init");
-                    install.Click += async (_, e) =>
+                    foreach (var remote in repo.Remotes)
                     {
-                        await repo.InstallLFSAsync();
-                        e.Handled = true;
-                    };
-                    menu.Items.Add(install);
+                        var remoteName = remote.Name;
+                        var lockRemote = new MenuItem();
+                        lockRemote.Header = remoteName;
+                        lockRemote.Click += async (_, e) =>
+                        {
+                            await this.ShowDialogAsync(new ViewModels.LFSLocks(repo, remoteName));
+                            e.Handled = true;
+                        };
+                        locks.Items.Add(lockRemote);
+                    }
                 }
 
-                menu.Open(control);
+                items.Add(new MenuItem() { Header = "-" });
+                items.Add(locks);
             }
-
-            ev.Handled = true;
+            else
+            {
+                var install = new MenuItem();
+                install.Header = App.Text("GitLFS.Install");
+                install.Icon = this.CreateMenuIcon("Icons.Init");
+                install.Click += async (_, e) =>
+                {
+                    await repo.InstallLFSAsync();
+                    e.Handled = true;
+                };
+                items.Add(install);
+            }
         }
 
         private async void StartBisect(object sender, RoutedEventArgs e)
@@ -468,35 +448,73 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
-        private void OpenCustomActionMenu(object sender, RoutedEventArgs ev)
+        private void FillCustomActionMenu(ItemCollection items, ViewModels.Repository repo)
+        {
+            var actions = repo.GetCustomActions(Models.CustomActionScope.Repository);
+            if (actions.Count > 0)
+            {
+                foreach (var action in actions)
+                {
+                    var (dup, label) = action;
+                    var item = new MenuItem();
+                    item.Icon = this.CreateMenuIcon("Icons.Action");
+                    item.Header = label;
+                    item.Click += async (_, e) =>
+                    {
+                        await repo.ExecCustomActionAsync(dup, null);
+                        e.Handled = true;
+                    };
+
+                    items.Add(item);
+                }
+            }
+            else
+            {
+                items.Add(new MenuItem() { Header = App.Text("Repository.CustomActions.Empty") });
+            }
+        }
+
+        private void OpenToolsMenu(object sender, RoutedEventArgs ev)
         {
             if (DataContext is ViewModels.Repository repo && sender is Control control)
             {
                 var menu = new ContextMenu();
                 menu.Placement = PlacementMode.BottomEdgeAlignedLeft;
 
-                var actions = repo.GetCustomActions(Models.CustomActionScope.Repository);
-                if (actions.Count > 0)
+                if (!repo.IsBare)
                 {
-                    foreach (var action in actions)
-                    {
-                        var (dup, label) = action;
-                        var item = new MenuItem();
-                        item.Icon = this.CreateMenuIcon("Icons.Action");
-                        item.Header = label;
-                        item.Click += async (_, e) =>
-                        {
-                            await repo.ExecCustomActionAsync(dup, null);
-                            e.Handled = true;
-                        };
+                    var gitFlow = new MenuItem();
+                    gitFlow.Header = App.Text("GitFlow");
+                    gitFlow.Icon = this.CreateMenuIcon("Icons.GitFlow");
+                    FillGitFlowMenu(gitFlow.Items, repo);
+                    menu.Items.Add(gitFlow);
 
-                        menu.Items.Add(item);
-                    }
+                    var lfs = new MenuItem();
+                    lfs.Header = App.Text("GitLFS");
+                    lfs.Icon = this.CreateMenuIcon("Icons.LFS");
+                    FillGitLFSMenu(lfs.Items, repo);
+                    menu.Items.Add(lfs);
+
+                    var bisect = new MenuItem();
+                    bisect.Header = App.Text("Bisect");
+                    bisect.Icon = this.CreateMenuIcon("Icons.Bisect");
+                    bisect.Click += StartBisect;
+                    menu.Items.Add(bisect);
                 }
-                else
-                {
-                    menu.Items.Add(new MenuItem() { Header = App.Text("Repository.CustomActions.Empty") });
-                }
+
+                var customActions = new MenuItem();
+                customActions.Header = App.Text("Repository.CustomActions");
+                customActions.Icon = this.CreateMenuIcon("Icons.Action");
+                FillCustomActionMenu(customActions.Items, repo);
+                menu.Items.Add(customActions);
+
+                menu.Items.Add(new MenuItem() { Header = "-" });
+
+                var cleanup = new MenuItem();
+                cleanup.Header = App.Text("Repository.Clean");
+                cleanup.Icon = this.CreateMenuIcon("Icons.Clean");
+                cleanup.Click += Cleanup;
+                menu.Items.Add(cleanup);
 
                 menu.Open(control);
             }

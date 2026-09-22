@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -42,10 +43,14 @@ namespace SourceGit.Views
                 if (string.IsNullOrEmpty(message))
                     return;
 
+                var subjectEnd = message.IndexOf('\n');
+                if (subjectEnd < 0)
+                    subjectEnd = message.Length;
+
                 var links = _fullMessage?.Inlines;
                 if (links == null || links.Count == 0)
                 {
-                    Inlines.Add(new Run(message));
+                    AddRuns(Inlines, message, 0, message.Length, subjectEnd, null);
                     return;
                 }
 
@@ -55,7 +60,7 @@ namespace SourceGit.Views
                 {
                     var link = links[i];
                     if (link.Start > pos)
-                        inlines.Add(new Run(message.Substring(pos, link.Start - pos)));
+                        AddRuns(inlines, message, pos, link.Start - pos, subjectEnd, null);
 
                     var cls = link.Type switch
                     {
@@ -65,18 +70,33 @@ namespace SourceGit.Views
                         _ => "normal"
                     };
 
-                    var run = new Run(message.Substring(link.Start, link.Length));
-                    run.Classes.Add(cls);
-                    inlines.Add(run);
-
+                    AddRuns(inlines, message, link.Start, link.Length, subjectEnd, cls);
                     pos = link.Start + link.Length;
                 }
 
                 if (pos < message.Length)
-                    inlines.Add(new Run(message.Substring(pos)));
+                    AddRuns(inlines, message, pos, message.Length - pos, subjectEnd, null);
 
                 Inlines.AddRange(inlines);
             }
+        }
+
+        private static void AddRuns(IList<Inline> target, string message, int start, int length, int subjectEnd, string cls)
+        {
+            var end = start + length;
+            if (start < subjectEnd && end > subjectEnd)
+            {
+                AddRuns(target, message, start, subjectEnd - start, subjectEnd, cls);
+                AddRuns(target, message, subjectEnd, end - subjectEnd, subjectEnd, cls);
+                return;
+            }
+
+            var run = new Run(message.Substring(start, length));
+            if (cls != null)
+                run.Classes.Add(cls);
+            if (end <= subjectEnd)
+                run.FontWeight = FontWeight.Bold;
+            target.Add(run);
         }
 
         protected override void OnPointerMoved(PointerEventArgs e)

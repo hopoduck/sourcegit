@@ -61,7 +61,7 @@
 
           <ListBox.ItemTemplate>
             <DataTemplate DataType="vm:LauncherPage">
-              <v:LauncherTabSizeBox UseFixedWidth="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseFixedTabWidth}" Height="30"
+              <v:LauncherTabSizeBox Width="{Binding $parent[v:LauncherTabBar].TabWidth}" Height="30"
                                     Padding="0,2,0,0"
                                     Background="Transparent"
                                     PointerPressed="OnPointerPressedTab"
@@ -81,20 +81,8 @@
                   </Grid>
                 </ToolTip.Tip>
 
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <v:Bookmark Grid.Column="0"
-                              Width="12" Height="12"
-                              Margin="12,0"
-                              Value="{Binding Node.Bookmark, Mode=OneWay}"
-                              IsVisible="{Binding Node.IsRepository}"/>
-                  <Path Grid.Column="0"
-                        Width="12" Height="12" Margin="12,0"
-                        Fill="{DynamicResource Brush.FG1}"
-                        Data="{StaticResource Icons.Repositories}"
-                        IsVisible="{Binding !Node.IsRepository}"
-                        IsHitTestVisible="False"/>
-
-                  <Grid Grid.Column="1"
+                <Grid ColumnDefinitions="*,Auto" Margin="10,0,6,0">
+                  <Grid Grid.Column="0"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         ColumnDefinitions="Auto,*"
                         IsHitTestVisible="False"
@@ -110,22 +98,25 @@
                                VerticalAlignment="Center"
                                FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
                                TextAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
                                Text="{Binding Node.Name}"
                                IsHitTestVisible="False"/>
                   </Grid>
 
-                  <TextBlock Grid.Column="1"
+                  <TextBlock Grid.Column="0"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
                              FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
                              TextAlignment="Center"
+                             TextTrimming="CharacterEllipsis"
                              Text="{DynamicResource Text.PageTabBar.Welcome.Title}"
                              IsVisible="{Binding !Node.IsRepository}"
                              IsHitTestVisible="False"/>
 
-                  <Button Grid.Column="2"
+                  <Button Grid.Column="1"
                           Classes="icon_button"
-                          Width="14" Height="12" Margin="12,0"
-                          Click="OnCloseTab">
+                          Width="14" Height="12" Margin="4,0,0,0"
+                          Click="OnCloseTab"
+                          IsVisible="{Binding $parent[v:LauncherTabSizeBox].IsPointerOver}">
                     <ToolTip.Tip>
                       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="{DynamicResource Text.PageTabBar.Tab.Close}" VerticalAlignment="Center"/>

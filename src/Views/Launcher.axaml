@@ -20,8 +20,8 @@
     </Grid.RowDefinitions>
 
     <!-- Toolbar Row (acts as the window title bar) -->
-    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
-      <Border Grid.Column="0" Grid.ColumnSpan="5"
+    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
+      <Border Grid.Column="0" Grid.ColumnSpan="6"
               Background="{DynamicResource Brush.ToolBar}"
               DoubleTapped="MaximizeOrRestoreWindow"
               PointerPressed="BeginMoveWindow"/>
@@ -33,9 +33,9 @@
                                   IsVisible="{OnPlatform False, macOS=True}"/>
 
       <!-- Menu (Windows/Linux) -->
-      <Button Grid.Column="0" Classes="icon_button" VerticalAlignment="Center" Margin="8,0,2,0" IsVisible="{OnPlatform True, macOS=False}">
+      <Button Grid.Column="4" Classes="icon_button toolbar_button" Width="40" VerticalAlignment="Bottom" Margin="0,0,4,2" IsVisible="{OnPlatform True, macOS=False}">
         <Button.Flyout>
-          <MenuFlyout Placement="BottomEdgeAlignedLeft" VerticalOffset="-6">
+          <MenuFlyout Placement="BottomEdgeAlignedRight" VerticalOffset="-6">
             <MenuItem Header="{DynamicResource Text.Preferences}" Command="{x:Static s:App.OpenPreferencesCommand}" InputGesture="Ctrl+,">
               <MenuItem.Icon>
                 <Path Width="14" Height="14" Data="{StaticResource Icons.Settings}"/>
@@ -83,12 +83,13 @@
             </MenuItem>
           </MenuFlyout>
         </Button.Flyout>
-        <Path Width="12" Height="12" Data="{StaticResource Icons.Menu}"/>
+        <Path Classes="toolbar_icon" Data="{StaticResource Icons.Menu}"/>
       </Button>
 
       <!-- Active Page Toolbar -->
       <ContentControl Grid.Column="1"
                       Height="44"
+                      Margin="4,0,0,0"
                       VerticalAlignment="Bottom"
                       Content="{Binding ActivePage.Data}">
         <ContentControl.DataTemplates>
@@ -142,7 +143,7 @@
       </Button>
 
       <!-- Caption Buttons (Windows/Linux) -->
-      <Border Grid.Column="4" IsVisible="{Binding #ThisControl.HasRightCaptionButton}">
+      <Border Grid.Column="5" IsVisible="{Binding #ThisControl.HasRightCaptionButton}">
         <v:CaptionButtons Height="30" VerticalAlignment="Top"/>
       </Border>
     </Grid>

@@ -225,15 +225,6 @@ namespace SourceGit.Views
             }
         }
 
-        private async void StashAll(object _, TappedEventArgs e)
-        {
-            if (DataContext is ViewModels.Repository repo)
-            {
-                await repo.StashAllAsync(e.KeyModifiers is KeyModifiers.Control);
-                e.Handled = true;
-            }
-        }
-
         private void FillGitFlowMenu(ItemCollection items, ViewModels.Repository repo)
         {
             if (repo.IsGitFlowEnabled())
@@ -474,12 +465,49 @@ namespace SourceGit.Views
             }
         }
 
-        private void OpenToolsMenu(object sender, RoutedEventArgs ev)
+        private void OpenMoreMenu(object sender, RoutedEventArgs ev)
         {
             if (DataContext is ViewModels.Repository repo && sender is Control control)
             {
                 var menu = new ContextMenu();
                 menu.Placement = PlacementMode.BottomEdgeAlignedLeft;
+
+                if (!repo.IsBare)
+                {
+                    var stash = new MenuItem();
+                    stash.Header = App.Text("Stash");
+                    stash.Icon = this.CreateMenuIcon("Icons.Stashes.Add");
+                    stash.Click += async (_, e) =>
+                    {
+                        await repo.StashAllAsync(false);
+                        e.Handled = true;
+                    };
+                    menu.Items.Add(stash);
+
+                    var patch = new MenuItem();
+                    patch.Header = App.Text("Apply.Title");
+                    patch.Icon = this.CreateMenuIcon("Icons.ApplyPatch");
+                    patch.Click += (_, e) =>
+                    {
+                        repo.ApplyPatch();
+                        e.Handled = true;
+                    };
+                    menu.Items.Add(patch);
+                    menu.Items.Add(new MenuItem() { Header = "-" });
+                }
+
+                var logs = new MenuItem();
+                logs.Header = App.Text("Repository.ViewLogs");
+                logs.Icon = this.CreateMenuIcon("Icons.Logs");
+                logs.Click += OpenGitLogs;
+                menu.Items.Add(logs);
+
+                var statistics = new MenuItem();
+                statistics.Header = App.Text("Repository.Statistics");
+                statistics.Icon = this.CreateMenuIcon("Icons.Statistics");
+                statistics.Click += OpenStatistics;
+                menu.Items.Add(statistics);
+                menu.Items.Add(new MenuItem() { Header = "-" });
 
                 if (!repo.IsBare)
                 {
@@ -507,7 +535,30 @@ namespace SourceGit.Views
                 customActions.Icon = this.CreateMenuIcon("Icons.Action");
                 FillCustomActionMenu(customActions.Items, repo);
                 menu.Items.Add(customActions);
+                menu.Items.Add(new MenuItem() { Header = "-" });
 
+                if (!repo.IsBare)
+                {
+                    var addSubmodule = new MenuItem();
+                    addSubmodule.Header = App.Text("Repository.Submodules.Add");
+                    addSubmodule.Icon = this.CreateMenuIcon("Icons.Submodule.Add");
+                    addSubmodule.Click += (_, e) =>
+                    {
+                        repo.AddSubmodule();
+                        e.Handled = true;
+                    };
+                    menu.Items.Add(addSubmodule);
+                }
+
+                var addWorktree = new MenuItem();
+                addWorktree.Header = App.Text("Repository.Worktrees.Add");
+                addWorktree.Icon = this.CreateMenuIcon("Icons.Worktree.Add");
+                addWorktree.Click += (_, e) =>
+                {
+                    repo.AddWorktree();
+                    e.Handled = true;
+                };
+                menu.Items.Add(addWorktree);
                 menu.Items.Add(new MenuItem() { Header = "-" });
 
                 var cleanup = new MenuItem();

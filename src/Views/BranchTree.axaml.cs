@@ -402,7 +402,8 @@ namespace SourceGit.Views
         {
             base.OnSizeChanged(e);
 
-            if (Bounds.Height >= 23.0)
+            // Sync once at least one row is shown (1px slack for layout rounding).
+            if (Bounds.Height >= Repository.SidebarRowHeight - 1)
                 BranchesPresenter.Height = Bounds.Height;
         }
 

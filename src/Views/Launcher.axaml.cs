@@ -93,10 +93,6 @@ namespace SourceGit.Views
             {
                 var state = (WindowState)change.NewValue!;
                 _lastWindowState = (WindowState)change.OldValue!;
-
-                if (!OperatingSystem.IsMacOS() && !UseSystemWindowFrame)
-                    CaptionHeight = new GridLength(state == WindowState.Maximized ? 44 : 48);
-
                 ViewModels.Preferences.Instance.Layout.LauncherWindowState = state;
             }
             else if (change.Property == IsActiveProperty)

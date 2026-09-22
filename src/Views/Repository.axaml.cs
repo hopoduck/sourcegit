@@ -250,20 +250,27 @@ namespace SourceGit.Views
             if (DataContext is not ViewModels.Repository { UIStates: { } } vm)
                 return;
 
-            var leftHeight = LeftSidebarGroups.Bounds.Height - SidebarHeaderHeight * 5 - 4;
+            // Submodule and worktree groups (header included) are hidden while empty.
+            var hasSubmodules = vm.Submodules is { Count: > 0 };
+            var hasWorktrees = vm.Worktrees is { Count: > 0 };
+            var visibleHeaders = 3 + (hasSubmodules ? 1 : 0) + (hasWorktrees ? 1 : 0);
+
+            var leftHeight = LeftSidebarGroups.Bounds.Height - SidebarHeaderHeight * visibleHeaders - 4;
             if (leftHeight <= 0)
                 return;
 
+            var showSubmodules = vm.IsSubmoduleGroupExpanded && hasSubmodules;
+            var showWorktrees = vm.IsWorktreeGroupExpanded && hasWorktrees;
             var localBranchRows = vm.IsLocalBranchGroupExpanded ? LocalBranchTree.Rows.Count : 0;
             var remoteBranchRows = vm.IsRemoteGroupExpanded ? RemoteBranchTree.Rows.Count : 0;
             var desiredBranches = (localBranchRows + remoteBranchRows) * SidebarRowHeight;
             var desiredTag = vm.IsTagGroupExpanded ? SidebarRowHeight * TagsList.Rows : 0;
-            var desiredSubmodule = vm.IsSubmoduleGroupExpanded ? SidebarRowHeight * SubmoduleList.Rows : 0;
-            var desiredWorktree = vm.IsWorktreeGroupExpanded ? SidebarRowHeight * vm.Worktrees.Count : 0;
+            var desiredSubmodule = showSubmodules ? SidebarRowHeight * SubmoduleList.Rows : 0;
+            var desiredWorktree = showWorktrees ? SidebarRowHeight * vm.Worktrees.Count : 0;
             var desiredOthers = desiredTag + desiredSubmodule + desiredWorktree;
             var hasOverflow = (desiredBranches + desiredOthers > leftHeight);
 
-            if (vm.IsWorktreeGroupExpanded)
+            if (showWorktrees)
             {
                 var height = desiredWorktree;
                 if (hasOverflow)
@@ -280,7 +287,7 @@ namespace SourceGit.Views
                 hasOverflow = (desiredBranches + desiredTag + desiredSubmodule) > leftHeight;
             }
 
-            if (vm.IsSubmoduleGroupExpanded)
+            if (showSubmodules)
             {
                 var height = desiredSubmodule;
                 if (hasOverflow)
@@ -536,6 +543,6 @@ namespace SourceGit.Views
         private GridLength _sidebarWidth;
 
         private const double SidebarHeaderHeight = 22.0;
-        private const double SidebarRowHeight = 22.0;
+        internal const double SidebarRowHeight = 22.0;
     }
 }

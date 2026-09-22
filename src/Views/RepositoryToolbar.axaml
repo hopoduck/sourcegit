@@ -23,13 +23,6 @@
       <Setter Property="Background" Value="{DynamicResource Brush.Window}"/>
       <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
     </Style>
-    <Style Selector="Rectangle.toolbar_separator">
-      <Setter Property="Width" Value="1"/>
-      <Setter Property="Height" Value="24"/>
-      <Setter Property="Margin" Value="8,0"/>
-      <Setter Property="VerticalAlignment" Value="Center"/>
-      <Setter Property="Fill" Value="{DynamicResource Brush.Border2}"/>
-    </Style>
   </UserControl.Styles>
 
   <Grid ColumnDefinitions="*,Auto,*">
@@ -86,28 +79,6 @@
         </StackPanel>
       </Button>
 
-      <Rectangle Classes="toolbar_separator" IsVisible="{Binding !IsBare}"/>
-
-      <Button Classes="icon_button toolbar_button" Tapped="StashAll" IsVisible="{Binding !IsBare}">
-        <ToolTip.Tip>
-          <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Stash}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
-          </StackPanel>
-        </ToolTip.Tip>
-        <StackPanel Orientation="Vertical">
-          <Path Classes="toolbar_icon" Data="{StaticResource Icons.Stashes.Add}"/>
-          <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Stash}"/>
-        </StackPanel>
-      </Button>
-
-      <Button Classes="icon_button toolbar_button" Command="{Binding ApplyPatch}" IsVisible="{Binding !IsBare}" ToolTip.Tip="{DynamicResource Text.Apply.Title}">
-        <StackPanel Orientation="Vertical">
-          <Path Classes="toolbar_icon" Data="{StaticResource Icons.ApplyPatch}"/>
-          <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Patch}"/>
-        </StackPanel>
-      </Button>
-
       <!-- Hidden hotkey buttons -->
       <Button Width="0" Height="0" Click="PushDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Shift+Up, macOS=⌘+Shift+Up}"/>
       <Button Width="0" Height="0" Click="PullDirectlyByHotKey" IsVisible="False" IsEnabled="{Binding !IsBare}" HotKey="{OnPlatform Ctrl+Shift+Down, macOS=⌘+Shift+Down}"/>
@@ -142,7 +113,7 @@
       </Grid>
     </Button>
 
-    <!-- Right: branch + tools | logs, stats, open -->
+    <!-- Right: branch + more | open -->
     <Grid Grid.Column="2" ColumnDefinitions="Auto,*,Auto">
       <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
         <Button Classes="icon_button toolbar_button" Command="{Binding CreateNewBranch}" HotKey="{OnPlatform Ctrl+B, macOS=⌘+B}">
@@ -159,11 +130,11 @@
           </StackPanel>
         </Button>
 
-        <Button Classes="icon_button toolbar_button" Click="OpenToolsMenu">
+        <Button Classes="icon_button toolbar_button" Click="OpenMoreMenu">
           <StackPanel Orientation="Vertical">
-            <Path Classes="toolbar_icon" Data="{StaticResource Icons.Tool}"/>
+            <Path Classes="toolbar_icon" Data="{StaticResource Icons.More}"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-              <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Tools}"/>
+              <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.More}"/>
               <Path Classes="toolbar_caret"/>
             </StackPanel>
           </StackPanel>
@@ -171,22 +142,6 @@
       </StackPanel>
 
       <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,4,0">
-        <Button Classes="icon_button toolbar_button" Click="OpenGitLogs" ToolTip.Tip="{DynamicResource Text.Repository.ViewLogs}">
-          <StackPanel Orientation="Vertical">
-            <Path Classes="toolbar_icon" Data="{StaticResource Icons.Logs}"/>
-            <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Logs}"/>
-          </StackPanel>
-        </Button>
-
-        <Button Classes="icon_button toolbar_button" Click="OpenStatistics" ToolTip.Tip="{DynamicResource Text.Repository.Statistics}">
-          <StackPanel Orientation="Vertical">
-            <Path Classes="toolbar_icon" Data="{StaticResource Icons.Statistics}"/>
-            <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Statistics}"/>
-          </StackPanel>
-        </Button>
-
-        <Rectangle Classes="toolbar_separator"/>
-
         <Button Classes="icon_button toolbar_button" Click="OpenWithExternalTools" ToolTip.Tip="{DynamicResource Text.Repository.OpenWithExternalTools}">
           <StackPanel Orientation="Vertical">
             <Path Classes="toolbar_icon" Data="{StaticResource Icons.OpenWith}"/>

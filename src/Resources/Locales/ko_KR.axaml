@@ -997,10 +997,6 @@
   <x:String x:Key="Text.Worktree.Unlock" xml:space="preserve">잠금 해제</x:String>
   <x:String x:Key="Text.Yes" xml:space="preserve">예</x:String>
   <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">브랜치</x:String>
-  <x:String x:Key="Text.Toolbar.Logs" xml:space="preserve">로그</x:String>
+  <x:String x:Key="Text.Toolbar.More" xml:space="preserve">더보기</x:String>
   <x:String x:Key="Text.Toolbar.Open" xml:space="preserve">열기</x:String>
-  <x:String x:Key="Text.Toolbar.Patch" xml:space="preserve">패치</x:String>
-  <x:String x:Key="Text.Toolbar.Stash" xml:space="preserve">스태시</x:String>
-  <x:String x:Key="Text.Toolbar.Statistics" xml:space="preserve">통계</x:String>
-  <x:String x:Key="Text.Toolbar.Tools" xml:space="preserve">도구</x:String>
 </ResourceDictionary>

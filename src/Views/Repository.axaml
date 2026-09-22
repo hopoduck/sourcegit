@@ -281,7 +281,7 @@
                 </TextBox.InnerRightContent>
               </TextBox>
 
-              <Grid Grid.Row="1" x:Name="LeftSidebarGroups" Margin="0,4,0,0" RowDefinitions="22,Auto,22,Auto,22,Auto,22,Auto,22,Auto" SizeChanged="OnLeftSidebarSizeChanged">
+              <Grid Grid.Row="1" x:Name="LeftSidebarGroups" Margin="0,4,0,0" RowDefinitions="22,Auto,22,Auto,22,Auto,Auto,Auto,Auto,Auto" SizeChanged="OnLeftSidebarSizeChanged">
                 <!-- Local Branches -->
                 <ToggleButton Grid.Row="0" Classes="group_expander" IsChecked="{Binding IsLocalBranchGroupExpanded, Mode=TwoWay}">
                   <Grid ColumnDefinitions="16,*,Auto">
@@ -396,7 +396,7 @@
                             SearchRequested="OnToggleSidebarFilter"/>
 
                 <!-- Submodules -->
-                <ToggleButton Grid.Row="6" Classes="group_expander" IsChecked="{Binding IsSubmoduleGroupExpanded, Mode=TwoWay}">
+                <ToggleButton Grid.Row="6" Classes="group_expander" IsChecked="{Binding IsSubmoduleGroupExpanded, Mode=TwoWay}" IsVisible="{Binding Submodules, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}">
                   <Grid ColumnDefinitions="16,*,Auto,Auto,Auto">
                     <Path Grid.Column="0" Width="11" Height="11" HorizontalAlignment="Left" Data="{StaticResource Icons.Submodules}" Fill="{DynamicResource Brush.FG2}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -437,11 +437,17 @@
                                   Content="{Binding VisibleSubmodules}"
                                   RowsChanged="OnLeftSidebarRowsChanged"
                                   Focusable="False"
-                                  IsVisible="{Binding IsSubmoduleGroupExpanded, Mode=OneWay}"
-                                  SearchRequested="OnToggleSidebarFilter"/>
+                                  SearchRequested="OnToggleSidebarFilter">
+                  <v:SubmodulesView.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                      <Binding Path="IsSubmoduleGroupExpanded" Mode="OneWay"/>
+                      <Binding Path="Submodules" Converter="{x:Static c:ListConverters.IsNotNullOrEmpty}"/>
+                    </MultiBinding>
+                  </v:SubmodulesView.IsVisible>
+                </v:SubmodulesView>
 
                 <!-- Worktrees -->
-                <ToggleButton Grid.Row="8" Classes="group_expander" IsChecked="{Binding IsWorktreeGroupExpanded, Mode=TwoWay}">
+                <ToggleButton Grid.Row="8" Classes="group_expander" IsChecked="{Binding IsWorktreeGroupExpanded, Mode=TwoWay}" IsVisible="{Binding Worktrees, Converter={x:Static c:ListConverters.IsNotNullOrEmpty}}">
                   <Grid ColumnDefinitions="16,*,Auto,Auto">
                     <Path Grid.Column="0" Width="11" Height="11" HorizontalAlignment="Left" Data="{StaticResource Icons.Worktrees}" Fill="{DynamicResource Brush.FG2}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -474,8 +480,13 @@
                          Classes="repo_left_content_list"
                          ItemsSource="{Binding Worktrees, Mode=OneWay}"
                          SelectionMode="Single"
-                         PropertyChanged="OnWorktreeListPropertyChanged"
-                         IsVisible="{Binding IsWorktreeGroupExpanded, Mode=OneWay}">
+                         PropertyChanged="OnWorktreeListPropertyChanged">
+                  <ListBox.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                      <Binding Path="IsWorktreeGroupExpanded" Mode="OneWay"/>
+                      <Binding Path="Worktrees" Converter="{x:Static c:ListConverters.IsNotNullOrEmpty}"/>
+                    </MultiBinding>
+                  </ListBox.IsVisible>
                   <ListBox.Styles>
                     <Style Selector="ListBoxItem">
                       <Setter Property="CornerRadius" Value="4"/>

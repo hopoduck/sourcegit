@@ -531,8 +531,7 @@
     <Setter Property="FontSize" Value="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static v:CommitMessagePresenter.IncreaseSubjectSize}}"/>
   </Style>
   <Style Selector="Run.body">
-    <Setter Property="FontFamily" Value="{DynamicResource Fonts.Monospace}"/>
-    <Setter Property="FontSize" Value="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static v:CommitMessagePresenter.DecreaseBodySize}}"/>
+    <Setter Property="FontSize" Value="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static v:CommitMessagePresenter.IncreaseBodySize}}"/>
   </Style>
   <Style Selector="Run.message_gap">
     <Setter Property="FontSize" Value="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static v:CommitMessagePresenter.IncreaseGapSize}}"/>

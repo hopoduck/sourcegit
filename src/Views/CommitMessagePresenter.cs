@@ -17,8 +17,8 @@ namespace SourceGit.Views
     {
         public static readonly FuncValueConverter<double, double> IncreaseSubjectSize =
             new(v => v + 4.0);
-        public static readonly FuncValueConverter<double, double> DecreaseBodySize =
-            new(v => Math.Max(9.0, v - 2.0));
+        public static readonly FuncValueConverter<double, double> IncreaseBodySize =
+            new(v => v + 1.0);
         public static readonly FuncValueConverter<double, double> IncreaseGapSize =
             new(v => v + 9.0);
 

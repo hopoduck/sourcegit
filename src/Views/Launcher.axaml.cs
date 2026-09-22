@@ -206,10 +206,18 @@ namespace SourceGit.Views
 
                 if (e.Key == Key.R)
                 {
-                    if (vm.ActivePage.Data is not ViewModels.Welcome)
-                        vm.AddNewTab();
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
+                    {
+                        if (vm.ActivePage.Data is not ViewModels.Welcome)
+                            vm.AddNewTab();
 
-                    ViewModels.Welcome.Instance.Clone();
+                        ViewModels.Welcome.Instance.Clone();
+                    }
+                    else
+                    {
+                        vm.CommandPalette = new ViewModels.WorkspaceCommandPalette(vm);
+                    }
+
                     e.Handled = true;
                     return;
                 }

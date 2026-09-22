@@ -11,6 +11,8 @@ namespace SourceGit.Views
 {
     public class CommitRefsIconCache
     {
+        public const double IconSize = 12.0;
+
         public static CommitRefsIconCache Instance
         {
             get
@@ -48,8 +50,8 @@ namespace SourceGit.Views
             var drawGeo = geo!.Clone();
             var iconBounds = drawGeo.Bounds;
             var translation = Matrix.CreateTranslation(-(Vector)iconBounds.Position);
-            var scale = Math.Min(10.0 / iconBounds.Width, 10.0 / iconBounds.Height);
-            var center = Matrix.CreateTranslation((10.0 - iconBounds.Width * scale) * 0.5, (10.0 - iconBounds.Height * scale) * 0.5);
+            var scale = Math.Min(IconSize / iconBounds.Width, IconSize / iconBounds.Height);
+            var center = Matrix.CreateTranslation((IconSize - iconBounds.Width * scale) * 0.5, (IconSize - iconBounds.Height * scale) * 0.5);
             var transform = translation * Matrix.CreateScale(scale, scale) * center;
             if (drawGeo.Transform == null || drawGeo.Transform.Value == Matrix.Identity)
                 drawGeo.Transform = new MatrixTransform(transform);
@@ -182,6 +184,7 @@ namespace SourceGit.Views
             var fg = Foreground;
             var bg = Background;
             var allowWrap = AllowWrap;
+            var renderScaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
             var x = 1.5;
             var y = 0.5;
 
@@ -226,7 +229,9 @@ namespace SourceGit.Views
                         var iconX = x + IconPadding;
                         foreach (var icon in item.Icons)
                         {
-                            using (context.PushTransform(Matrix.CreateTranslation(iconX, y + (BadgeHeight - IconSize) * 0.5)))
+                            var snappedX = Math.Round(iconX * renderScaling) / renderScaling;
+                            var snappedY = Math.Round((y + (BadgeHeight - IconSize) * 0.5) * renderScaling) / renderScaling;
+                            using (context.PushTransform(Matrix.CreateTranslation(snappedX, snappedY)))
                                 context.DrawGeometry(iconBrush, null, icon);
                             iconX += IconSize + IconSpacing;
                         }
@@ -418,7 +423,7 @@ namespace SourceGit.Views
         private const double BadgeHeight = 18.0;
         private const double BadgeRadius = 3.0;
         private const double BadgeGap = 4.0;
-        private const double IconSize = 10.0;
+        private const double IconSize = CommitRefsIconCache.IconSize;
         private const double IconPadding = 4.0;
         private const double IconSpacing = 3.0;
         private const double LabelPaddingLeft = 6.0;

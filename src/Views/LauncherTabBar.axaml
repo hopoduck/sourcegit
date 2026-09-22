@@ -41,11 +41,11 @@
             </Style>
             <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
-              <Setter Property="Opacity" Value=".5"/>
+              <Setter Property="Opacity" Value=".8"/>
             </Style>
             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
-              <Setter Property="Opacity" Value=".85"/>
+              <Setter Property="Opacity" Value="1"/>
             </Style>
             <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
@@ -96,7 +96,7 @@
 
                     <TextBlock Grid.Column="1"
                                VerticalAlignment="Center"
-                               FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
+                               FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize}"
                                TextAlignment="Center"
                                TextTrimming="CharacterEllipsis"
                                Text="{Binding Node.Name}"
@@ -105,7 +105,7 @@
 
                   <TextBlock Grid.Column="0"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                             FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize, Converter={x:Static c:DoubleConverters.Decrease}}"
+                             FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize}"
                              TextAlignment="Center"
                              TextTrimming="CharacterEllipsis"
                              Text="{DynamicResource Text.PageTabBar.Welcome.Title}"

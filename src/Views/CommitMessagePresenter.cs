@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -14,6 +15,13 @@ namespace SourceGit.Views
 {
     public class CommitMessagePresenter : SelectableTextBlock
     {
+        public static readonly FuncValueConverter<double, double> IncreaseSubjectSize =
+            new(v => v + 4.0);
+        public static readonly FuncValueConverter<double, double> DecreaseBodySize =
+            new(v => Math.Max(9.0, v - 2.0));
+        public static readonly FuncValueConverter<double, double> IncreaseGapSize =
+            new(v => v + 9.0);
+
         public static readonly DirectProperty<CommitMessagePresenter, Models.CommitFullMessage> FullMessageProperty =
             AvaloniaProperty.RegisterDirect<CommitMessagePresenter, Models.CommitFullMessage>(
                 nameof(FullMessage),
@@ -91,11 +99,36 @@ namespace SourceGit.Views
                 return;
             }
 
+            var blankLine = subjectEnd + 1;
+            if (blankLine < message.Length &&
+                message[subjectEnd] == '\n' &&
+                message[blankLine] == '\n' &&
+                start <= blankLine && end > blankLine)
+            {
+                if (start < blankLine)
+                    AddRuns(target, message, start, blankLine - start, subjectEnd, cls);
+
+                var spacer = new Run("\u200B");
+                spacer.Classes.Add("message_gap");
+                target.Add(spacer);
+
+                if (blankLine + 1 < end)
+                    AddRuns(target, message, blankLine + 1, end - blankLine - 1, subjectEnd, cls);
+                return;
+            }
+
             var run = new Run(message.Substring(start, length));
             if (cls != null)
                 run.Classes.Add(cls);
             if (end <= subjectEnd)
+            {
+                run.Classes.Add("subject");
                 run.FontWeight = FontWeight.Bold;
+            }
+            else
+            {
+                run.Classes.Add("body");
+            }
             target.Add(run);
         }
 

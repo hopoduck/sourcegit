@@ -4,14 +4,12 @@
 > This repository is an **unofficial personal fork** of [sourcegit-scm/sourcegit](https://github.com/sourcegit-scm/sourcegit) with UI changes (denser layout, reorganized toolbar, restyled commit graph). It is not affiliated with or supported by the upstream project.
 >
 > * Fork builds (Windows x64 only) are published at [hopoduck/sourcegit/releases](https://github.com/hopoduck/sourcegit/releases).
-> * The screenshots below show this fork. The rest is the upstream README; its download links, package repositories and badges refer to the official builds.
+> * The screenshots and the badges below show this fork. The rest is the upstream README; its download links and package repositories refer to the official builds.
 > * Licensed under the same [MIT License](LICENSE) as upstream. The original copyright belongs to sourcegit-scm.
 
-[![stars](https://img.shields.io/github/stars/sourcegit-scm/sourcegit.svg)](https://github.com/sourcegit-scm/sourcegit/stargazers)
-[![forks](https://img.shields.io/github/forks/sourcegit-scm/sourcegit.svg)](https://github.com/sourcegit-scm/sourcegit/forks)
-[![license](https://img.shields.io/github/license/sourcegit-scm/sourcegit.svg)](LICENSE)
-[![latest](https://img.shields.io/github/v/release/sourcegit-scm/sourcegit.svg)](https://github.com/sourcegit-scm/sourcegit/releases/latest)
-[![downloads](https://img.shields.io/github/downloads/sourcegit-scm/sourcegit/total)](https://github.com/sourcegit-scm/sourcegit/releases)
+[![license](https://img.shields.io/github/license/hopoduck/sourcegit.svg)](LICENSE)
+[![latest](https://img.shields.io/github/v/release/hopoduck/sourcegit.svg)](https://github.com/hopoduck/sourcegit/releases/latest)
+[![downloads](https://img.shields.io/github/downloads/hopoduck/sourcegit/total)](https://github.com/hopoduck/sourcegit/releases)
 
 ## Screenshots
 

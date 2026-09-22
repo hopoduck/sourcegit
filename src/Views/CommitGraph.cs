@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
@@ -87,8 +89,9 @@ namespace SourceGit.Views
                 var geo = new StreamGeometry();
                 using (var ctx = geo.Open())
                 {
-                    ctx.BeginFigure(new Point(link.Start.X, startY), false);
-                    ctx.QuadraticBezierTo(new Point(link.Control.X, link.Control.Y * rowHeight), new Point(link.End.X, endY));
+                    var from = new Point(link.Start.X, startY);
+                    ctx.BeginFigure(from, false);
+                    CornerHorizontalFirst(ctx, from, new Point(link.End.X, endY));
                 }
 
                 var pen = link.IsHighlighted ? Models.CommitGraph.Pens[link.Color] : grayedPen;
@@ -136,19 +139,14 @@ namespace SourceGit.Views
 
                         if (cur.X > last.X)
                         {
-                            ctx.QuadraticBezierTo(new Point(cur.X, last.Y), cur);
+                            CornerHorizontalFirst(ctx, last, cur);
                         }
                         else if (cur.X < last.X)
                         {
                             if (i < size - 1)
-                            {
-                                var midY = (last.Y + cur.Y) / 2;
-                                ctx.CubicBezierTo(new Point(last.X, midY + 4), new Point(cur.X, midY - 4), cur);
-                            }
+                                LaneShift(ctx, last, cur);
                             else
-                            {
-                                ctx.QuadraticBezierTo(new Point(last.X, cur.Y), cur);
-                            }
+                                CornerVerticalFirst(ctx, last, cur);
                         }
                         else
                         {
@@ -168,7 +166,6 @@ namespace SourceGit.Views
         private void DrawAnchors(DrawingContext context, Models.CommitGraph graph, double top, double bottom, double rowHeight)
         {
             var dotFill = DotBrush;
-            var dotFillPen = new Pen(dotFill, 2);
             var grayedPen = new Pen(Brushes.Gray, Models.CommitGraph.Pens[0].Thickness);
 
             foreach (var dot in graph.Dots)
@@ -184,20 +181,74 @@ namespace SourceGit.Views
                 switch (dot.Type)
                 {
                     case Models.CommitGraph.DotType.Head:
-                        context.DrawEllipse(dotFill, pen, center, 6, 6);
-                        context.DrawEllipse(pen.Brush, null, center, 3, 3);
+                        context.DrawEllipse(dotFill, pen, center, 5.5, 5.5);
+                        context.DrawEllipse(pen.Brush, null, center, 2.5, 2.5);
                         break;
                     case Models.CommitGraph.DotType.Merge:
-                        context.DrawEllipse(pen.Brush, null, center, 6, 6);
-                        context.DrawLine(dotFillPen, new Point(center.X, center.Y - 3), new Point(center.X, center.Y + 3));
-                        context.DrawLine(dotFillPen, new Point(center.X - 3, center.Y), new Point(center.X + 3, center.Y));
+                        context.DrawEllipse(dotFill, pen, center, 4.5, 4.5);
                         break;
                     default:
-                        context.DrawEllipse(dotFill, pen, center, 3, 3);
+                        context.DrawEllipse(pen.Brush, null, center, 3, 3);
                         break;
                 }
             }
         }
+
+        // Runs horizontally along `from.Y`, then bends down into `to.X` (branch-off / merge link).
+        private static void CornerHorizontalFirst(StreamGeometryContext ctx, Point from, Point to)
+        {
+            var dy = to.Y - from.Y;
+            if (dy <= 0)
+            {
+                ctx.LineTo(to);
+                return;
+            }
+
+            var dir = to.X > from.X ? 1 : -1;
+            var r = Math.Min(CornerRadius, Math.Min(Math.Abs(to.X - from.X), dy));
+            ctx.LineTo(new Point(to.X - dir * r, from.Y));
+            ctx.ArcTo(new Point(to.X, from.Y + r), new Size(r, r), 0, false, dir > 0 ? SweepDirection.Clockwise : SweepDirection.CounterClockwise);
+            ctx.LineTo(to);
+        }
+
+        // Runs down along `from.X`, then bends sideways into `to` (path ending at a commit dot).
+        private static void CornerVerticalFirst(StreamGeometryContext ctx, Point from, Point to)
+        {
+            var dy = to.Y - from.Y;
+            if (dy <= 0)
+            {
+                ctx.LineTo(to);
+                return;
+            }
+
+            var dir = to.X > from.X ? 1 : -1;
+            var r = Math.Min(CornerRadius, Math.Min(Math.Abs(to.X - from.X), dy));
+            ctx.LineTo(new Point(from.X, to.Y - r));
+            ctx.ArcTo(new Point(from.X + dir * r, to.Y), new Size(r, r), 0, false, dir > 0 ? SweepDirection.CounterClockwise : SweepDirection.Clockwise);
+            ctx.LineTo(to);
+        }
+
+        // Moves a lane sideways: down, across at mid height, down again.
+        private static void LaneShift(StreamGeometryContext ctx, Point from, Point to)
+        {
+            var dy = to.Y - from.Y;
+            if (dy <= 0)
+            {
+                ctx.LineTo(to);
+                return;
+            }
+
+            var dir = to.X > from.X ? 1 : -1;
+            var r = Math.Min(CornerRadius, Math.Min(Math.Abs(to.X - from.X), dy) / 2);
+            var midY = (from.Y + to.Y) / 2;
+            ctx.LineTo(new Point(from.X, midY - r));
+            ctx.ArcTo(new Point(from.X + dir * r, midY), new Size(r, r), 0, false, dir > 0 ? SweepDirection.CounterClockwise : SweepDirection.Clockwise);
+            ctx.LineTo(new Point(to.X - dir * r, midY));
+            ctx.ArcTo(new Point(to.X, midY + r), new Size(r, r), 0, false, dir > 0 ? SweepDirection.Clockwise : SweepDirection.CounterClockwise);
+            ctx.LineTo(to);
+        }
+
+        private const double CornerRadius = 6;
 
         private Models.CommitGraph _graph = null;
         private Models.CommitGraphLayout _layout = null;

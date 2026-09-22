@@ -5,6 +5,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 
 namespace SourceGit.Views
 {
@@ -48,7 +49,8 @@ namespace SourceGit.Views
             var iconBounds = drawGeo.Bounds;
             var translation = Matrix.CreateTranslation(-(Vector)iconBounds.Position);
             var scale = Math.Min(10.0 / iconBounds.Width, 10.0 / iconBounds.Height);
-            var transform = translation * Matrix.CreateScale(scale, scale);
+            var center = Matrix.CreateTranslation((10.0 - iconBounds.Width * scale) * 0.5, (10.0 - iconBounds.Height * scale) * 0.5);
+            var transform = translation * Matrix.CreateScale(scale, scale) * center;
             if (drawGeo.Transform == null || drawGeo.Transform.Value == Matrix.Identity)
                 drawGeo.Transform = new MatrixTransform(transform);
             else
@@ -72,6 +74,8 @@ namespace SourceGit.Views
             public FormattedText Label { get; set; } = null;
             public IBrush Brush { get; set; } = null;
             public bool IsHead { get; set; } = false;
+            public List<Geometry> Icons { get; set; } = [];
+            public double IconWidth { get; set; } = 0.0;
             public double Width { get; set; } = 0.0;
             public List<FormattedText> Remotes { get; set; } = [];
         }
@@ -159,10 +163,10 @@ namespace SourceGit.Views
 
         public Models.Decorator DecoratorAt(Point point)
         {
-            var x = 0.0;
+            var x = 1.5;
             foreach (var item in _items)
             {
-                x += item.Width;
+                x += item.Width + BadgeGap;
                 if (point.X < x)
                     return item.Decorator;
             }
@@ -175,14 +179,11 @@ namespace SourceGit.Views
             if (_items.Count == 0)
                 return;
 
-            var useGraphColor = UseGraphColor;
             var fg = Foreground;
             var bg = Background;
             var allowWrap = AllowWrap;
             var x = 1.5;
             var y = 0.5;
-            var remoteIcon = CommitRefsIconCache.Instance.GetIcon(Models.DecoratorType.RemoteBranchHead);
-            var hasSingleRemote = HasSingleRemote;
 
             context.FillRectangle(Brushes.Transparent, Bounds);
 
@@ -191,64 +192,65 @@ namespace SourceGit.Views
                 if (allowWrap && x > 1.5 && x + item.Width > Bounds.Width)
                 {
                     x = 1.5;
-                    y += 20.0;
+                    y += BadgeHeight + BadgeGap;
                 }
 
-                var entireRect = new RoundedRect(new Rect(x, y, item.Width, 16), new CornerRadius(4));
-                if (item.IsHead)
-                {
-                    if (useGraphColor)
-                    {
-                        if (bg != null)
-                            context.DrawRectangle(bg, null, entireRect);
+                var pen = new Pen(item.Brush);
+                var entireRect = new RoundedRect(new Rect(x, y, item.Width, BadgeHeight), new CornerRadius(BadgeRadius));
+                if (bg != null)
+                    context.DrawRectangle(bg, null, entireRect);
 
-                        using (context.PushOpacity(.6))
-                            context.DrawRectangle(item.Brush, null, entireRect);
+                var labelX = x + item.IconWidth;
+                var labelCorner = item.IconWidth > 0 ? new CornerRadius(0, BadgeRadius, BadgeRadius, 0) : new CornerRadius(BadgeRadius);
+                var labelRect = new RoundedRect(new Rect(labelX, y, item.Width - item.IconWidth, BadgeHeight), labelCorner);
+                using (context.PushOpacity(item.IsHead ? .32 : .2))
+                    context.DrawRectangle(item.Brush, null, labelRect);
+
+                if (item.IconWidth > 0)
+                {
+                    // The current branch gets a solid icon cell; other icons stay muted.
+                    var iconBrush = fg;
+                    var iconOpacity = .55;
+                    if (item.IsHead)
+                    {
+                        var iconRect = new RoundedRect(new Rect(x, y, item.IconWidth, BadgeHeight), new CornerRadius(BadgeRadius, 0, 0, BadgeRadius));
+                        context.DrawRectangle(item.Brush, null, iconRect);
+                        iconBrush = s_headIconBrush;
+                        iconOpacity = 1;
                     }
-                }
-                else
-                {
-                    if (bg != null)
-                        context.DrawRectangle(bg, null, entireRect);
 
-                    var labelRect = new RoundedRect(new Rect(x + 16, y, item.Width - 16, 16), new CornerRadius(4, 0, 0, 4));
-                    using (context.PushOpacity(.2))
-                        context.DrawRectangle(item.Brush, null, labelRect);
-                }
+                    context.DrawLine(pen, new Point(labelX, y), new Point(labelX, y + BadgeHeight));
 
-                context.DrawLine(new Pen(item.Brush), new Point(x + 16, y), new Point(x + 16, y + 16));
-                context.DrawText(item.Label, new Point(x + 20, y + 8.0 - item.Label.Height * 0.5));
-
-                if (item.Remotes.Count > 0)
-                {
-                    var rx = x + 20 + item.Label.WidthIncludingTrailingWhitespace + 4;
-
-                    if (hasSingleRemote)
+                    using (context.PushOpacity(iconOpacity))
                     {
-                        context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
-                        using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                            context.DrawGeometry(fg, null, remoteIcon);
-                    }
-                    else
-                    {
-                        foreach (var remote in item.Remotes)
+                        var iconX = x + IconPadding;
+                        foreach (var icon in item.Icons)
                         {
-                            context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
-                            using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                                context.DrawGeometry(fg, null, remoteIcon);
-                            context.DrawText(remote, new Point(rx + 16, y + 8.0 - remote.Height * 0.5));
-                            rx += remote.WidthIncludingTrailingWhitespace + 22;
+                            using (context.PushTransform(Matrix.CreateTranslation(iconX, y + (BadgeHeight - IconSize) * 0.5)))
+                                context.DrawGeometry(iconBrush, null, icon);
+                            iconX += IconSize + IconSpacing;
                         }
                     }
                 }
 
-                context.DrawRectangle(null, new Pen(item.Brush), entireRect);
+                var textX = labelX + LabelPaddingLeft;
+                context.DrawText(item.Label, new Point(textX, y + (BadgeHeight - item.Label.Height) * 0.5));
 
-                var icon = CommitRefsIconCache.Instance.GetIcon(item.Decorator.Type);
-                using (context.PushTransform(Matrix.CreateTranslation(x + 3, y + 3)))
-                    context.DrawGeometry(fg, null, icon);
+                if (item.Remotes.Count > 0)
+                {
+                    var rx = textX + item.Label.Width + RemoteSpacing;
+                    using (context.PushOpacity(.6))
+                    {
+                        foreach (var remote in item.Remotes)
+                        {
+                            context.DrawText(remote, new Point(rx, y + (BadgeHeight - remote.Height) * 0.5));
+                            rx += remote.Width + RemoteSpacing;
+                        }
+                    }
+                }
 
-                x += item.Width + 4;
+                context.DrawRectangle(null, pen, entireRect);
+                x += item.Width + BadgeGap;
             }
         }
 
@@ -292,11 +294,13 @@ namespace SourceGit.Views
             var hasSingleRemote = HasSingleRemote;
             var typeface = new Typeface(FontFamily);
             var typefaceHead = new Typeface(FontFamily, FontStyle.Normal, FontWeight.Bold);
-            var typefaceRemote = new Typeface(FontFamily, FontStyle.Italic, FontWeight.Bold);
+            var typefaceRemote = new Typeface(FontFamily, FontStyle.Italic, FontWeight.Normal);
             var fg = Foreground;
             var normalBG = UseGraphColor ? Models.CommitGraph.Pens[commit.Color].Brush : Brushes.Gray;
+            var tagBG = UseGraphColor ? s_tagBrush : Brushes.Gray;
+            var icons = CommitRefsIconCache.Instance;
             var labelSize = FontSize;
-            var requiredHeight = 16.0;
+            var requiredHeight = BadgeHeight;
             var x = 0.0;
             var allowWrap = AllowWrap;
             var showTags = ShowTags;
@@ -314,34 +318,20 @@ namespace SourceGit.Views
                 var item = new RenderItem()
                 {
                     Decorator = decorator,
-                    Brush = decorator.Type == Models.DecoratorType.Tag ? Brushes.Gray : normalBG,
+                    Brush = decorator.Type == Models.DecoratorType.Tag ? tagBG : normalBG,
                     IsHead = decorator.Type is Models.DecoratorType.CurrentBranchHead or Models.DecoratorType.CurrentCommitHead,
                 };
                 _items.Add(item);
 
-                if (item.IsHead)
-                {
-                    item.Label = new FormattedText(
-                        decorator.Name,
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        typefaceHead,
-                        labelSize + 1,
-                        fg);
-                }
-                else
-                {
-                    item.Label = new FormattedText(
-                        decorator.Name,
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        typeface,
-                        labelSize,
-                        fg);
-                }
+                item.Label = new FormattedText(
+                    decorator.Name,
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    item.IsHead ? typefaceHead : typeface,
+                    labelSize,
+                    fg);
 
-                item.Width = item.Label.Width + 24;
-
+                var onRemote = decorator.Type == Models.DecoratorType.RemoteBranchHead;
                 var findRemotes = useCompactBranchNames && (decorator.Type == Models.DecoratorType.CurrentBranchHead || decorator.Type == Models.DecoratorType.LocalBranchHead);
                 if (findRemotes)
                 {
@@ -358,32 +348,55 @@ namespace SourceGit.Views
                         var name = test.Name.Substring(idxOfSlash + 1);
                         if (decorator.Name.Equals(name, StringComparison.Ordinal))
                         {
-                            var remote = new FormattedText(
-                                test.Name.Substring(0, idxOfSlash),
-                                CultureInfo.CurrentCulture,
-                                FlowDirection.LeftToRight,
-                                typefaceRemote,
-                                labelSize,
-                                fg);
+                            onRemote = true;
 
-                            item.Remotes.Add(remote);
-
-                            if (hasSingleRemote)
-                                item.Width += 18;
-                            else
-                                item.Width += remote.WidthIncludingTrailingWhitespace + 22;
+                            if (!hasSingleRemote)
+                            {
+                                item.Remotes.Add(new FormattedText(
+                                    test.Name.Substring(0, idxOfSlash),
+                                    CultureInfo.CurrentCulture,
+                                    FlowDirection.LeftToRight,
+                                    typefaceRemote,
+                                    labelSize,
+                                    fg));
+                            }
 
                             skippedIdx.Add(j);
                         }
                     }
                 }
 
-                x += item.Width + 4;
+                // Icons only where they carry meaning: HEAD gets a check, tags a tag,
+                // and branches a cloud only when they exist on a remote.
+                switch (decorator.Type)
+                {
+                    case Models.DecoratorType.CurrentBranchHead:
+                    case Models.DecoratorType.CurrentCommitHead:
+                        item.Icons.Add(icons.GetIcon(decorator.Type));
+                        if (onRemote)
+                            item.Icons.Add(icons.GetIcon(Models.DecoratorType.RemoteBranchHead));
+                        break;
+                    case Models.DecoratorType.Tag:
+                        item.Icons.Add(icons.GetIcon(decorator.Type));
+                        break;
+                    default:
+                        if (onRemote)
+                            item.Icons.Add(icons.GetIcon(Models.DecoratorType.RemoteBranchHead));
+                        break;
+                }
+
+                var iconCount = item.Icons.Count;
+                item.IconWidth = iconCount > 0 ? IconPadding * 2 + IconSize * iconCount + IconSpacing * (iconCount - 1) : 0;
+                item.Width = item.IconWidth + LabelPaddingLeft + item.Label.Width + LabelPaddingRight;
+                foreach (var remote in item.Remotes)
+                    item.Width += RemoteSpacing + remote.Width;
+
+                x += item.Width + BadgeGap;
                 if (allowWrap)
                 {
                     if (x > availableSize.Width)
                     {
-                        requiredHeight += 20.0;
+                        requiredHeight += BadgeHeight + BadgeGap;
                         x = item.Width;
                     }
                 }
@@ -392,7 +405,7 @@ namespace SourceGit.Views
             double requiredWidth = 0;
             if (_items.Count > 0)
             {
-                if (allowWrap && requiredHeight > 16.0)
+                if (allowWrap && requiredHeight > BadgeHeight)
                     requiredWidth = double.IsInfinity(availableSize.Width) ? x + 2 : availableSize.Width;
                 else
                     requiredWidth = x + 2;
@@ -401,6 +414,19 @@ namespace SourceGit.Views
             InvalidateVisual();
             return new Size(requiredWidth, requiredHeight);
         }
+
+        private const double BadgeHeight = 18.0;
+        private const double BadgeRadius = 3.0;
+        private const double BadgeGap = 4.0;
+        private const double IconSize = 10.0;
+        private const double IconPadding = 4.0;
+        private const double IconSpacing = 3.0;
+        private const double LabelPaddingLeft = 6.0;
+        private const double LabelPaddingRight = 7.0;
+        private const double RemoteSpacing = 5.0;
+
+        private static readonly IBrush s_tagBrush = new ImmutableSolidColorBrush(Color.FromRgb(0x9D, 0x8F, 0xE8));
+        private static readonly IBrush s_headIconBrush = new ImmutableSolidColorBrush(Color.FromArgb(0xE0, 0x1C, 0x1C, 0x1C));
 
         private List<RenderItem> _items = new List<RenderItem>();
     }

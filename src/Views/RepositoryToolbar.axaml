@@ -25,9 +25,9 @@
     </Style>
   </UserControl.Styles>
 
-  <Grid ColumnDefinitions="*,Auto,*">
+  <v:WindowCenteredPanel>
     <!-- Left: sync + local work -->
-    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0">
       <Button Classes="icon_button toolbar_button" Tapped="Fetch">
         <ToolTip.Tip>
           <StackPanel Orientation="Vertical">
@@ -85,9 +85,8 @@
       <Button Width="0" Height="0" Click="FetchDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Down, macOS=⌘+Down}"/>
     </StackPanel>
 
-    <!-- Center: repository + current branch -->
-    <Button Grid.Column="1"
-            Classes="repo_box"
+    <!-- Center (window-centered): repository + current branch -->
+    <Button Classes="repo_box"
             Width="300" Height="36"
             Margin="12,0"
             VerticalAlignment="Center"
@@ -114,7 +113,7 @@
     </Button>
 
     <!-- Right: branch + more | open -->
-    <Grid Grid.Column="2" ColumnDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="Auto,*,Auto">
       <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
         <Button Classes="icon_button toolbar_button" Command="{Binding CreateNewBranch}" HotKey="{OnPlatform Ctrl+B, macOS=⌘+B}">
           <ToolTip.Tip>
@@ -153,5 +152,5 @@
         </Button>
       </StackPanel>
     </Grid>
-  </Grid>
+  </v:WindowCenteredPanel>
 </UserControl>

@@ -1,5 +1,12 @@
 # SourceGit - Opensource Git GUI client.
 
+> [!IMPORTANT]
+> This repository is an **unofficial personal fork** of [sourcegit-scm/sourcegit](https://github.com/sourcegit-scm/sourcegit) with UI changes (denser layout, reorganized toolbar, restyled commit graph). It is not affiliated with or supported by the upstream project.
+>
+> * Fork builds (Windows x64 only) are published at [hopoduck/sourcegit/releases](https://github.com/hopoduck/sourcegit/releases).
+> * Everything below is the upstream README. Its download links, package repositories and badges refer to the official builds.
+> * Licensed under the same [MIT License](LICENSE) as upstream. The original copyright belongs to sourcegit-scm.
+
 [![stars](https://img.shields.io/github/stars/sourcegit-scm/sourcegit.svg)](https://github.com/sourcegit-scm/sourcegit/stargazers)
 [![forks](https://img.shields.io/github/forks/sourcegit-scm/sourcegit.svg)](https://github.com/sourcegit-scm/sourcegit/forks)
 [![license](https://img.shields.io/github/license/sourcegit-scm/sourcegit.svg)](LICENSE)

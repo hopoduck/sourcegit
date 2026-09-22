@@ -6,9 +6,11 @@ SourceGit is a cross-platform Git GUI client built with .NET 10 and Avalonia 11 
 
 ## This fork
 
-- `origin` = `hopoduck/sourcegit` (private personal fork), `upstream` = `sourcegit-scm/sourcegit` (upstream works on `develop`). The base branch here is `master`.
+- `origin` = `hopoduck/sourcegit` (personal fork), `upstream` = `sourcegit-scm/sourcegit` (upstream works on `develop`). The base branch here is `master`.
 - Fork customizations (Fork-like density, header toolbar, 22px rows, graph palette and ref badges) live almost entirely in `src/Views` and `src/Resources`. Keep new changes in the view layer and touch `Models`/`ViewModels`/`Commands` minimally so upstream merges stay small.
-- GitHub Actions are disabled on the fork, so the CI checks below must be run locally. Never push tags.
+- Versions are `<upstream version>.<fork revision>` in `VERSION` (e.g. `2026.21.1`). Keep them purely numeric: the in-app update check parses the tag after `v` with `System.Version`, reading the fork's GitHub releases API.
+- Release: bump `VERSION`, commit, then `git tag -a vYYYY.NN.N -m "<release notes>"` and `git push origin vYYYY.NN.N`. `release.yml` only triggers on that tag shape, builds Windows x64 only, and uses the tag message as the release notes. Never `git push --tags`, because the local repo also holds upstream's tags.
+- `format-check.yml` runs on pushes to `master`; run `dotnet format` locally before pushing.
 
 ## Commands
 

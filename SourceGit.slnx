@@ -1,9 +1,7 @@
 <Solution>
 	<Folder Name="/.github/workflows/">
 		<File Path=".github/workflows/build.yml"/>
-		<File Path=".github/workflows/ci.yml"/>
 		<File Path=".github/workflows/format-check.yml"/>
-		<File Path=".github/workflows/localization-check.yml"/>
 		<File Path=".github/workflows/package.yml"/>
 		<File Path=".github/workflows/release.yml"/>
 	</Folder>

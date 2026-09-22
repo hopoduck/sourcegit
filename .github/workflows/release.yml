@@ -2,7 +2,10 @@ name: Release
 on:
   push:
     tags:
-      - v*
+      # Fork releases are vYYYY.NN.N; upstream tags (v2026.21, v8.22.1, ...) never match.
+      - 'v[0-9][0-9][0-9][0-9].*.*'
+permissions:
+  contents: read
 jobs:
   build:
     name: Build
@@ -38,7 +41,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
           VERSION: ${{ needs.version.outputs.version }}
-        run: gh release create "$TAG" -t "$VERSION" --notes-from-tag
+        run: gh release create "$TAG" -t "$VERSION (hopoduck)" --notes-from-tag
       - name: Download artifacts
         uses: actions/download-artifact@v8
         with:

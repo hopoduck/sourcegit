@@ -404,7 +404,7 @@
                 <Run Foreground="{DynamicResource Brush.FG2}" Text="{DynamicResource Text.WorkingCopy.CommitTip}"/>
               </TextBlock>
               <TextBlock TextAlignment="Left" TextWrapping="Wrap" Margin="0,4,0,0">
-                <Run Text="{OnPlatform Ctrl+Shift+Enter, macOS=⌘+⇧+Enter}"/>
+                <Run Text="{OnPlatform Ctrl+Alt+Enter, macOS=⌘+⌥+Enter}"/>
                 <Run Foreground="{DynamicResource Brush.FG2}" Text="{DynamicResource Text.WorkingCopy.CommitWithAutoStage}"/>
               </TextBlock>
             </StackPanel>
@@ -418,12 +418,12 @@
           </Button.IsEnabled>
         </Button>
 
-        <!-- Invisible button just to add another hotkey `Ctrl+Shift+Enter` to commit with auto-stage -->
+        <!-- Invisible button just to add another hotkey `Ctrl+Alt+Enter` to commit with auto-stage -->
         <Button Grid.Column="6"
                 Width="0" Height="0"
                 Background="Transparent"
                 Click="OnCommitWithAutoStage"
-                HotKey="{OnPlatform Ctrl+Shift+Enter, macOS=⌘+Shift+Enter}">
+                HotKey="{OnPlatform Ctrl+Alt+Enter, macOS=⌘+Alt+Enter}">
           <Button.IsEnabled>
             <MultiBinding Converter="{x:Static BoolConverters.And}">
               <Binding Path="IsCommitting" Converter="{x:Static BoolConverters.Not}"/>
@@ -439,8 +439,8 @@
                 Margin="8,0,0,0"
                 Padding="8,0"
                 Click="OnCommitWithPush"
-                HotKey="{OnPlatform Ctrl+Alt+Enter, macOS=⌘+Alt+Enter}"
-                ToolTip.Tip="{OnPlatform Ctrl+Alt+Enter, macOS=⌘+⌥+Enter}"
+                HotKey="{OnPlatform Ctrl+Shift+Enter, macOS=⌘+Shift+Enter}"
+                ToolTip.Tip="{OnPlatform Ctrl+Shift+Enter, macOS=⌘+⇧+Enter}"
                 ToolTip.Placement="Top"
                 ToolTip.VerticalOffset="0">
           <Button.IsEnabled>

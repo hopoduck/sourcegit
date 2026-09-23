@@ -345,6 +345,18 @@ namespace SourceGit.Views
             set => SetAndRaise(IssueTrackersProperty, ref _issueTrackers, value);
         }
 
+        public static readonly DirectProperty<Histories, List<ViewModels.Worktree>> WorktreesProperty =
+            AvaloniaProperty.RegisterDirect<Histories, List<ViewModels.Worktree>>(
+                nameof(Worktrees),
+                static o => o.Worktrees,
+                static (o, v) => o.Worktrees = v);
+
+        public List<ViewModels.Worktree> Worktrees
+        {
+            get => _worktrees;
+            set => SetAndRaise(WorktreesProperty, ref _worktrees, value);
+        }
+
         public static readonly DirectProperty<Histories, bool> IsScrollToTopVisibleProperty =
             AvaloniaProperty.RegisterDirect<Histories, bool>(
                 nameof(IsScrollToTopVisible),
@@ -1914,6 +1926,7 @@ namespace SourceGit.Views
         private Models.Bisect _bisect = null;
         private bool _hasSingleRemote = false;
         private AvaloniaList<Models.IssueTracker> _issueTrackers = null;
+        private List<ViewModels.Worktree> _worktrees = null;
         private bool _isScrollToTopVisible = false;
         private bool _isDetailsPanelExpanded = true;
         private bool _resizingAuthorColumn = false;

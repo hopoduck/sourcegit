@@ -29,7 +29,10 @@ namespace SourceGit.Views
             _branch = LoadIcon("Icons.Branch");
             _remote = LoadIcon("Icons.Remote");
             _tag = LoadIcon("Icons.Tag");
+            Worktree = LoadIcon("Icons.Worktree");
         }
+
+        public Geometry Worktree { get; }
 
         public Geometry GetIcon(Models.DecoratorType type)
         {
@@ -163,6 +166,15 @@ namespace SourceGit.Views
             set => SetValue(ShowTagsProperty, value);
         }
 
+        public static readonly StyledProperty<List<ViewModels.Worktree>> WorktreesProperty =
+            AvaloniaProperty.Register<CommitRefsPresenter, List<ViewModels.Worktree>>(nameof(Worktrees));
+
+        public List<ViewModels.Worktree> Worktrees
+        {
+            get => GetValue(WorktreesProperty);
+            set => SetValue(WorktreesProperty, value);
+        }
+
         public Models.Decorator DecoratorAt(Point point)
         {
             var x = 1.5;
@@ -270,7 +282,8 @@ namespace SourceGit.Views
                 change.Property == UseCompactBranchNamesProperty ||
                 change.Property == HasSingleRemoteProperty ||
                 change.Property == BackgroundProperty ||
-                change.Property == ShowTagsProperty)
+                change.Property == ShowTagsProperty ||
+                change.Property == WorktreesProperty)
                 InvalidateMeasure();
         }
 
@@ -309,6 +322,7 @@ namespace SourceGit.Views
             var x = 0.0;
             var allowWrap = AllowWrap;
             var showTags = ShowTags;
+            var worktrees = Worktrees;
             var skippedIdx = new HashSet<int>();
 
             for (var i = 0; i < count; i++)
@@ -372,7 +386,8 @@ namespace SourceGit.Views
                 }
 
                 // Icons only where they carry meaning: HEAD gets a check, tags a tag,
-                // and branches a cloud only when they exist on a remote.
+                // branches a folder when another worktree has them checked out,
+                // and a cloud only when they exist on a remote.
                 switch (decorator.Type)
                 {
                     case Models.DecoratorType.CurrentBranchHead:
@@ -385,6 +400,9 @@ namespace SourceGit.Views
                         item.Icons.Add(icons.GetIcon(decorator.Type));
                         break;
                     default:
+                        if (decorator.Type == Models.DecoratorType.LocalBranchHead && worktrees != null &&
+                            worktrees.Exists(w => !w.IsCurrent && w.Branch.Equals(decorator.Name, StringComparison.Ordinal)))
+                            item.Icons.Add(icons.Worktree);
                         if (onRemote)
                             item.Icons.Add(icons.GetIcon(Models.DecoratorType.RemoteBranchHead));
                         break;

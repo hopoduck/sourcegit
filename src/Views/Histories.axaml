@@ -134,7 +134,8 @@
                                            VerticalAlignment="Center"
                                            UseGraphColor="{Binding IsHighlightedInGraph, Mode=OneWay}"
                                            UseCompactBranchNames="{Binding Source={x:Static vm:Preferences.Instance}, Path=UseCompactBranchNamesInGraph}"
-                                           HasSingleRemote="{Binding $parent[v:Histories].HasSingleRemote}"/>
+                                           HasSingleRemote="{Binding $parent[v:Histories].HasSingleRemote}"
+                                           Worktrees="{Binding $parent[v:Histories].Worktrees}"/>
 
                     <v:CommitSubjectPresenter Grid.Column="3"
                                               Height="22"

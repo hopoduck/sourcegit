@@ -29,6 +29,8 @@ namespace SourceGit.ViewModels
             get;
         }
 
+        public bool IsLinkedWorktree => !GitDir.Equals(_gitCommonDir, StringComparison.Ordinal);
+
         public Models.RepositorySettings Settings
         {
             get => _settings;

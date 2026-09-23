@@ -550,11 +550,14 @@
   <x:String x:Key="Text.Hotkeys.Repo.CommitWithAutoStage" xml:space="preserve">Stage all changes and commit</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.CreateBranch" xml:space="preserve">Create new branch</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.Fetch" xml:space="preserve">Fetch, starts directly</x:String>
+  <x:String x:Key="Text.Hotkeys.Repo.FetchWithOptions" xml:space="preserve">Fetch, opens options</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.GoToChild" xml:space="preserve">Goto child of selected commit</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.GoToParent" xml:space="preserve">Goto parent of selected commit</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.OpenCommandPalette" xml:space="preserve">Open command palette</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.Pull" xml:space="preserve">Pull, starts directly</x:String>
+  <x:String x:Key="Text.Hotkeys.Repo.PullWithOptions" xml:space="preserve">Pull, opens options</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.Push" xml:space="preserve">Push, starts directly</x:String>
+  <x:String x:Key="Text.Hotkeys.Repo.PushWithOptions" xml:space="preserve">Push, opens options</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.Refresh" xml:space="preserve">Force to reload this repository</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.ToggleCommitDetailPanel" xml:space="preserve">Expand/Collapse commit details panel</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.ToggleSearchCommits" xml:space="preserve">Toggle commit search panel</x:String>

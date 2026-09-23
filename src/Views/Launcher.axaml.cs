@@ -132,7 +132,7 @@ namespace SourceGit.Views
 
             var next = e is { KeyModifiers: KeyModifiers.Control, Key: Key.Tab or Key.PageDown };
             var prev = e is { KeyModifiers: KeyModifiers.Control | KeyModifiers.Shift, Key: Key.Tab } or
-                { KeyModifiers: KeyModifiers.Control, Key: Key.PageUp };
+            { KeyModifiers: KeyModifiers.Control, Key: Key.PageUp };
 
             if (next)
                 vm.GotoNextTab();
@@ -207,7 +207,7 @@ namespace SourceGit.Views
                 }
                 else if (vm.ActivePage.Data is ViewModels.Repository repo
                     && vm.CommandPalette is ViewModels.LauncherPagesCommandPalette
-                    && e.Key == Key.P
+                    && e.Key == Key.K
                     && e.KeyModifiers == (cmdKey | KeyModifiers.Shift))
                 {
                     vm.CommandPalette = new ViewModels.RepositoryCommandPalette(repo);
@@ -244,7 +244,7 @@ namespace SourceGit.Views
                     return;
                 }
 
-                if (e.Key == Key.L)
+                if (e.Key is Key.L or Key.O && e.KeyModifiers == cmdKey)
                 {
                     if (vm.ActivePage.Data is not ViewModels.Welcome)
                         vm.AddNewTab();
@@ -293,11 +293,11 @@ namespace SourceGit.Views
                             repo.SelectedViewIndex = 2;
                             e.Handled = true;
                             return;
-                        case Key.P when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
+                        case Key.K when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
                             vm.CommandPalette = new ViewModels.RepositoryCommandPalette(repo);
                             e.Handled = true;
                             return;
-                        case Key.F when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
+                        case Key.F when e.KeyModifiers == cmdKey:
                             repo.Histories.IsSearchingCommits = !repo.Histories.IsSearchingCommits;
                             e.Handled = true;
                             return;

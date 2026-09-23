@@ -83,6 +83,12 @@
       <Button Width="0" Height="0" Click="PushDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Shift+Up, macOS=⌘+Shift+Up}"/>
       <Button Width="0" Height="0" Click="PullDirectlyByHotKey" IsVisible="False" IsEnabled="{Binding !IsBare}" HotKey="{OnPlatform Ctrl+Shift+Down, macOS=⌘+Shift+Down}"/>
       <Button Width="0" Height="0" Click="FetchDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Down, macOS=⌘+Down}"/>
+      <Button Width="0" Height="0" Click="FetchByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Shift+F, macOS=⌘+Shift+F}"/>
+      <Button Width="0" Height="0" Click="FetchDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Alt+Shift+F, macOS=⌘+Alt+Shift+F}"/>
+      <Button Width="0" Height="0" Click="PullByHotKey" IsVisible="False" IsEnabled="{Binding !IsBare}" HotKey="{OnPlatform Ctrl+Shift+L, macOS=⌘+Shift+L}"/>
+      <Button Width="0" Height="0" Click="PullDirectlyByHotKey" IsVisible="False" IsEnabled="{Binding !IsBare}" HotKey="{OnPlatform Ctrl+Alt+Shift+L, macOS=⌘+Alt+Shift+L}"/>
+      <Button Width="0" Height="0" Click="PushByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Shift+P, macOS=⌘+Shift+P}"/>
+      <Button Width="0" Height="0" Click="PushDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Alt+Shift+P, macOS=⌘+Alt+Shift+P}"/>
     </StackPanel>
 
     <!-- Center (window-centered): repository + current branch -->

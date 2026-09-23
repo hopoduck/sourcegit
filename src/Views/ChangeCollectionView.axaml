@@ -65,6 +65,11 @@
                                   Change="{Binding Change}"
                                   IsVisible="{Binding !IsFolder}"/>
 
+              <v:FileIcon Width="16" Height="16"
+                          Margin="3,0,0,0"
+                          FilePath="{Binding FullPath}"
+                          IsVisible="{Binding !IsFolder}"/>
+
               <TextBlock Text="{Binding ConflictMarker, Mode=OneWay}"
                          Foreground="DarkOrange"
                          FontWeight="Bold"
@@ -96,6 +101,10 @@
                                   Margin="4,0,0,0"
                                   IsUnstagedChange="{Binding #ThisControl.IsUnstagedChange}"
                                   Change="{Binding}" />
+
+              <v:FileIcon Width="16" Height="16"
+                          Margin="3,0,0,0"
+                          FilePath="{Binding Path}"/>
 
               <TextBlock Text="{Binding ConflictMarker}"
                          Foreground="DarkOrange"
@@ -131,6 +140,10 @@
                                   Margin="4,0,0,0"
                                   IsUnstagedChange="{Binding #ThisControl.IsUnstagedChange}"
                                   Change="{Binding}" />
+
+              <v:FileIcon Width="16" Height="16"
+                          Margin="3,0,0,0"
+                          FilePath="{Binding Path}"/>
 
               <TextBlock Text="{Binding ConflictMarker}"
                          Foreground="DarkOrange"

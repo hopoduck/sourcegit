@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -17,6 +18,17 @@ namespace SourceGit.Models
 
         [JsonPropertyName("body")]
         public string Body { get; set; }
+
+        [JsonPropertyName("assets")]
+        public List<ReleaseAsset> Assets { get; set; } = [];
+
+        [JsonIgnore]
+        public ReleaseAsset InstallPackage => SelfUpdateInstaller.IsSupported
+            ? Assets?.Find(x => x.Name.EndsWith(".win-x64.zip", StringComparison.OrdinalIgnoreCase))
+            : null;
+
+        [JsonIgnore]
+        public bool CanInstall => InstallPackage != null;
 
         [JsonIgnore]
         public System.Version CurrentVersion { get; }
@@ -37,6 +49,18 @@ namespace SourceGit.Models
             var assembly = Assembly.GetExecutingAssembly().GetName();
             CurrentVersion = assembly.Version ?? new System.Version();
         }
+    }
+
+    public class ReleaseAsset
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("browser_download_url")]
+        public string DownloadUrl { get; set; } = string.Empty;
+
+        [JsonPropertyName("size")]
+        public long Size { get; set; }
     }
 
     public class AlreadyUpToDate;

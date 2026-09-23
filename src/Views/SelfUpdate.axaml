@@ -69,15 +69,49 @@
                 <v:UpdateInfoView/>
               </Border>
 
-              <StackPanel Margin="0,8,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
+              <TextBlock Margin="0,8,0,0"
+                         MaxWidth="500"
+                         TextWrapping="Wrap"
+                         Foreground="Red"
+                         Text="{Binding $parent[v:SelfUpdate].((vm:SelfUpdate)DataContext).InstallError, FallbackValue=''}"
+                         IsVisible="{Binding $parent[v:SelfUpdate].((vm:SelfUpdate)DataContext).InstallError, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"/>
+
+              <StackPanel Margin="0,8,0,0"
+                          Orientation="Vertical"
+                          HorizontalAlignment="Center"
+                          IsVisible="{Binding $parent[v:SelfUpdate].((vm:SelfUpdate)DataContext).IsInstalling, FallbackValue=False}">
+                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource Text.SelfUpdate.Downloading}"/>
+                <ProgressBar Width="300"
+                             Margin="0,6,0,0"
+                             Minimum="0" Maximum="100"
+                             Value="{Binding $parent[v:SelfUpdate].((vm:SelfUpdate)DataContext).InstallProgress, FallbackValue=0}"/>
+              </StackPanel>
+
+              <StackPanel Margin="0,8,0,0"
+                          Orientation="Horizontal"
+                          HorizontalAlignment="Center"
+                          IsVisible="{Binding !$parent[v:SelfUpdate].((vm:SelfUpdate)DataContext).IsInstalling, FallbackValue=True}">
                 <Button Classes="flat primary"
+                        Height="30"
+                        Margin="0,0,8,0"
+                        Click="InstallUpdate"
+                        IsVisible="{Binding CanInstall}"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                  <StackPanel Orientation="Horizontal">
+                    <Path Width="12" Height="12" Data="{StaticResource Icons.SoftwareUpdate}" Fill="{DynamicResource AccentButtonForeground}"/>
+                    <TextBlock Text="{DynamicResource Text.SelfUpdate.Install}" Margin="8,0,0,0" Foreground="{DynamicResource AccentButtonForeground}"/>
+                  </StackPanel>
+                </Button>
+
+                <Button Classes="flat"
                         Height="30"
                         Click="GotoDownload"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center">
                   <StackPanel Orientation="Horizontal">
-                    <Path Width="12" Height="12" Data="{StaticResource Icons.Pull}" Fill="{DynamicResource AccentButtonForeground}"/>
-                    <TextBlock Text="{DynamicResource Text.SelfUpdate.GotoDownload}" Margin="8,0,0,0" Foreground="{DynamicResource AccentButtonForeground}"/>
+                    <Path Width="12" Height="12" Data="{StaticResource Icons.Pull}"/>
+                    <TextBlock Text="{DynamicResource Text.SelfUpdate.GotoDownload}" Margin="8,0,0,0"/>
                   </StackPanel>
                 </Button>
 

@@ -70,6 +70,15 @@ namespace SourceGit.Views
             InitializeComponent();
         }
 
+        protected override void OnClosing(WindowClosingEventArgs e)
+        {
+            // Closing mid-download would leave the app quitting unexpectedly once the package is ready.
+            if (DataContext is ViewModels.SelfUpdate { IsInstalling: true } && e.CloseReason == WindowCloseReason.WindowClosing)
+                e.Cancel = true;
+
+            base.OnClosing(e);
+        }
+
         private void CloseWindow(object _1, RoutedEventArgs _2)
         {
             Close();
@@ -79,6 +88,17 @@ namespace SourceGit.Views
         {
             Native.OS.OpenBrowser("https://github.com/hopoduck/sourcegit/releases/latest");
             e.Handled = true;
+        }
+
+        private async void InstallUpdate(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            if (sender is Button { DataContext: Models.Version ver } && DataContext is ViewModels.SelfUpdate vm)
+            {
+                if (await vm.InstallAsync(ver))
+                    App.Quit(0);
+            }
         }
 
         private void IgnoreThisVersion(object sender, RoutedEventArgs e)

@@ -43,6 +43,7 @@ namespace SourceGit.Views
 
             InitializeComponent();
             PositionChanged += OnPositionChanged;
+            AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
 
             var layout = ViewModels.Preferences.Instance.Layout;
             Width = layout.LauncherWidth;
@@ -120,6 +121,27 @@ namespace SourceGit.Views
                 layout.LauncherWidth = Width;
                 layout.LauncherHeight = Height;
             }
+        }
+
+        // Focused lists and editors consume Tab/PageUp/PageDown before they bubble up to OnKeyDown,
+        // so switch repository tabs in the tunneling phase instead.
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (DataContext is not ViewModels.Launcher { CommandPalette: null } vm)
+                return;
+
+            var next = e is { KeyModifiers: KeyModifiers.Control, Key: Key.Tab or Key.PageDown };
+            var prev = e is { KeyModifiers: KeyModifiers.Control | KeyModifiers.Shift, Key: Key.Tab } or
+                { KeyModifiers: KeyModifiers.Control, Key: Key.PageUp };
+
+            if (next)
+                vm.GotoNextTab();
+            else if (prev)
+                vm.GotoPrevTab();
+            else
+                return;
+
+            e.Handled = true;
         }
 
         protected override async void OnKeyDown(KeyEventArgs e)

@@ -530,6 +530,14 @@ namespace SourceGit
 #if !DISABLE_UPDATE_DETECTION
             if (pref.ShouldCheck4UpdateOnStartup())
                 Check4Update();
+
+            _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromHours(1) };
+            _updateTimer.Tick += (_, _) =>
+            {
+                if (ViewModels.Preferences.Instance.Check4UpdatesOnStartup)
+                    Check4Update();
+            };
+            _updateTimer.Start();
 #endif
         }
         #endregion
@@ -600,6 +608,7 @@ namespace SourceGit
 
         private Models.IpcChannel _ipcChannel = null;
         private ViewModels.Launcher _launcher = null;
+        private DispatcherTimer _updateTimer = null;
         private ResourceDictionary _activeLocale = null;
         private ResourceDictionary _themeOverrides = null;
         private ResourceDictionary _fontsOverrides = null;

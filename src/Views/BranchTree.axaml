@@ -181,7 +181,6 @@
 
               <!-- Filter Mode Switcher -->
               <v:FilterModeSwitchButton Grid.Column="4"
-                                        Width="12"
                                         Margin="4,0,8,0"
                                         Mode="{Binding FilterMode}"/>
             </Grid>

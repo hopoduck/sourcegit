@@ -19,17 +19,6 @@ namespace SourceGit.Views
             set => SetAndRaise(ModeProperty, ref _mode, value);
         }
 
-        public static readonly DirectProperty<FilterModeSwitchButton, bool> IsContextMenuOpeningProperty =
-            AvaloniaProperty.RegisterDirect<FilterModeSwitchButton, bool>(
-                nameof(IsContextMenuOpening),
-                static o => o.IsContextMenuOpening);
-
-        public bool IsContextMenuOpening
-        {
-            get => _isContextMenuOpening;
-            set => SetAndRaise(IsContextMenuOpeningProperty, ref _isContextMenuOpening, value);
-        }
-
         public static readonly StyledProperty<bool> IsHoverParentProperty =
             AvaloniaProperty.Register<FilterModeSwitchButton, bool>(nameof(IsHoverParent));
 
@@ -41,129 +30,61 @@ namespace SourceGit.Views
 
         public FilterModeSwitchButton()
         {
-            IsVisible = false;
             InitializeComponent();
+            UpdateButtons();
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             base.OnPropertyChanged(change);
 
-            if (change.Property == ModeProperty ||
-                change.Property == IsHoverParentProperty ||
-                change.Property == IsContextMenuOpeningProperty)
-            {
-                var visible = (Mode != Models.FilterMode.None || IsHoverParent || IsContextMenuOpening);
-                SetCurrentValue(IsVisibleProperty, visible);
-            }
+            if (change.Property == ModeProperty || change.Property == IsHoverParentProperty)
+                UpdateButtons();
         }
 
-        private void OnChangeFilterModeButtonClicked(object sender, RoutedEventArgs e)
+        private void UpdateButtons()
         {
-            var repoView = this.FindAncestorOfType<Repository>();
-
-            if (repoView?.DataContext is not ViewModels.Repository repo)
+            if (IncludeButton == null || ExcludeButton == null)
                 return;
 
-            if (sender is not Button button)
-                return;
+            var included = Mode == Models.FilterMode.Included;
+            var excluded = Mode == Models.FilterMode.Excluded;
 
-            var menu = new ContextMenu();
-            if (DataContext is ViewModels.TagListItem tagItem)
-                FillContextMenuForTag(menu, repo, tagItem.Tag, tagItem.FilterMode);
-            else if (DataContext is ViewModels.TagTreeNode tagNode)
-                FillContextMenuForTag(menu, repo, tagNode.Tag, tagNode.FilterMode);
-            else if (DataContext is ViewModels.BranchTreeNode branchNode)
-                FillContextMenuForBranch(menu, repo, branchNode, branchNode.FilterMode);
+            IncludeButton.IsVisible = included || IsHoverParent;
+            ExcludeButton.IsVisible = excluded || IsHoverParent;
+            IncludeIcon.Classes.Set("active", included);
+            ExcludeIcon.Classes.Set("active", excluded);
 
-            menu.Closed += (_, _) => IsContextMenuOpening = false;
-            menu.Open(button);
+            SetCurrentValue(IsVisibleProperty, IncludeButton.IsVisible || ExcludeButton.IsVisible);
+        }
 
-            IsContextMenuOpening = true;
+        private void OnIncludeButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterMode(Models.FilterMode.Included);
             e.Handled = true;
         }
 
-        private void FillContextMenuForTag(ContextMenu menu, ViewModels.Repository repo, Models.Tag tag, Models.FilterMode current)
+        private void OnExcludeButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (current != Models.FilterMode.None)
-            {
-                var unset = new MenuItem();
-                unset.Header = App.Text("Repository.FilterCommits.Default");
-                unset.Click += (_, ev) =>
-                {
-                    repo.SetTagFilterMode(tag, Models.FilterMode.None);
-                    ev.Handled = true;
-                };
-
-                menu.Items.Add(unset);
-                menu.Items.Add(new MenuItem() { Header = "-" });
-            }
-
-            var include = new MenuItem();
-            include.Icon = this.CreateMenuIcon("Icons.Filter");
-            include.Header = App.Text("Repository.FilterCommits.Include");
-            include.IsEnabled = current != Models.FilterMode.Included;
-            include.Click += (_, ev) =>
-            {
-                repo.SetTagFilterMode(tag, Models.FilterMode.Included);
-                ev.Handled = true;
-            };
-
-            var exclude = new MenuItem();
-            exclude.Icon = this.CreateMenuIcon("Icons.EyeClose");
-            exclude.Header = App.Text("Repository.FilterCommits.Exclude");
-            exclude.IsEnabled = current != Models.FilterMode.Excluded;
-            exclude.Click += (_, ev) =>
-            {
-                repo.SetTagFilterMode(tag, Models.FilterMode.Excluded);
-                ev.Handled = true;
-            };
-
-            menu.Items.Add(include);
-            menu.Items.Add(exclude);
+            ToggleFilterMode(Models.FilterMode.Excluded);
+            e.Handled = true;
         }
 
-        private void FillContextMenuForBranch(ContextMenu menu, ViewModels.Repository repo, ViewModels.BranchTreeNode node, Models.FilterMode current)
+        private void ToggleFilterMode(Models.FilterMode mode)
         {
-            if (current != Models.FilterMode.None)
-            {
-                var unset = new MenuItem();
-                unset.Header = App.Text("Repository.FilterCommits.Default");
-                unset.Click += (_, ev) =>
-                {
-                    repo.SetBranchFilterMode(node, Models.FilterMode.None, false, true);
-                    ev.Handled = true;
-                };
+            var repoView = this.FindAncestorOfType<Repository>();
+            if (repoView?.DataContext is not ViewModels.Repository repo)
+                return;
 
-                menu.Items.Add(unset);
-                menu.Items.Add(new MenuItem() { Header = "-" });
-            }
-
-            var include = new MenuItem();
-            include.Icon = this.CreateMenuIcon("Icons.Filter");
-            include.Header = App.Text("Repository.FilterCommits.Include");
-            include.IsEnabled = current != Models.FilterMode.Included;
-            include.Click += (_, ev) =>
-            {
-                repo.SetBranchFilterMode(node, Models.FilterMode.Included, false, true);
-                ev.Handled = true;
-            };
-
-            var exclude = new MenuItem();
-            exclude.Icon = this.CreateMenuIcon("Icons.EyeClose");
-            exclude.Header = App.Text("Repository.FilterCommits.Exclude");
-            exclude.IsEnabled = current != Models.FilterMode.Excluded;
-            exclude.Click += (_, ev) =>
-            {
-                repo.SetBranchFilterMode(node, Models.FilterMode.Excluded, false, true);
-                ev.Handled = true;
-            };
-
-            menu.Items.Add(include);
-            menu.Items.Add(exclude);
+            var target = Mode == mode ? Models.FilterMode.None : mode;
+            if (DataContext is ViewModels.TagListItem tagItem)
+                repo.SetTagFilterMode(tagItem.Tag, target);
+            else if (DataContext is ViewModels.TagTreeNode tagNode)
+                repo.SetTagFilterMode(tagNode.Tag, target);
+            else if (DataContext is ViewModels.BranchTreeNode branchNode)
+                repo.SetBranchFilterMode(branchNode, target, false, true);
         }
 
         private Models.FilterMode _mode = Models.FilterMode.None;
-        private bool _isContextMenuOpening = false;
     }
 }

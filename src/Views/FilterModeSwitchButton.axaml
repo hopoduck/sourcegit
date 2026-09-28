@@ -2,32 +2,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:m="using:SourceGit.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SourceGit.Views.FilterModeSwitchButton"
-             x:Name="ThisControl">
-  <Button Classes="icon_button"
-          Width="12" Height="12"
-          Padding="0"
-          Background="Transparent"
-          VerticalContentAlignment="Center"
-          Click="OnChangeFilterModeButtonClicked"
-          ToolTip.Tip="{DynamicResource Text.Repository.FilterCommits}">
-    <Grid>
-      <Path Width="12" Height="12"
-            Data="{StaticResource Icons.Eye}"
-            Fill="{DynamicResource Brush.FG1}"
-            IsVisible="{Binding #ThisControl.Mode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static m:FilterMode.None}}"/>
+             x:Class="SourceGit.Views.FilterModeSwitchButton">
+  <UserControl.Styles>
+    <Style Selector="Path.filter_mode_icon">
+      <Setter Property="Width" Value="12"/>
+      <Setter Property="Height" Value="12"/>
+      <Setter Property="Fill" Value="{DynamicResource Brush.FG1}"/>
+      <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+    <Style Selector="Path.filter_mode_icon.active">
+      <Setter Property="Fill" Value="{DynamicResource Brush.Accent}"/>
+      <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <Style Selector="ListBox:focus-within ListBoxItem:selected Path.filter_mode_icon.active">
+      <Setter Property="Fill" Value="White"/>
+    </Style>
+  </UserControl.Styles>
 
-      <Path Width="12" Height="12"
-            Data="{StaticResource Icons.Filter}"
-            Fill="{DynamicResource Brush.Accent}"
-            IsVisible="{Binding #ThisControl.Mode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static m:FilterMode.Included}}"/>
+  <StackPanel Orientation="Horizontal" Spacing="4">
+    <Button x:Name="IncludeButton"
+            Classes="icon_button"
+            Width="12" Height="12"
+            Padding="0"
+            Background="Transparent"
+            VerticalContentAlignment="Center"
+            Click="OnIncludeButtonClicked"
+            ToolTip.Tip="{DynamicResource Text.Repository.FilterCommits.Include}">
+      <Path x:Name="IncludeIcon" Classes="filter_mode_icon" Data="{StaticResource Icons.Filter}"/>
+    </Button>
 
-      <Path Width="12" Height="12"
-            Data="{StaticResource Icons.EyeClose}"
-            Fill="{DynamicResource Brush.Accent}"
-            IsVisible="{Binding #ThisControl.Mode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static m:FilterMode.Excluded}}"/>
-    </Grid>
-  </Button>
+    <Button x:Name="ExcludeButton"
+            Classes="icon_button"
+            Width="12" Height="12"
+            Padding="0"
+            Background="Transparent"
+            VerticalContentAlignment="Center"
+            Click="OnExcludeButtonClicked"
+            ToolTip.Tip="{DynamicResource Text.Repository.FilterCommits.Exclude}">
+      <Path x:Name="ExcludeIcon" Classes="filter_mode_icon" Data="{StaticResource Icons.EyeClose}"/>
+    </Button>
+  </StackPanel>
 </UserControl>

@@ -48,9 +48,9 @@ namespace SourceGit.Views
                 return;
             }
 
-            if (node.Backend is Models.Remote)
+            if (node.Backend is Models.Remote remote)
             {
-                CreateContent(new Thickness(0, 0, 0, 0), "Icons.Remote");
+                CreateContent(new Thickness(0, 0, 0, 0), GetRemoteIconKey(remote.URL));
             }
             else if (node.Backend is Models.Branch branch)
             {
@@ -68,6 +68,20 @@ namespace SourceGit.Views
                 else
                     CreateContent(new Thickness(0, 2, 0, 0), "Icons.Folder");
             }
+        }
+
+        public static string GetRemoteIconKey(string url, string fallback = "Icons.Remote")
+        {
+            if (string.IsNullOrEmpty(url))
+                return fallback;
+
+            if (url.Contains("github.com", StringComparison.OrdinalIgnoreCase))
+                return "Icons.GitHub";
+
+            if (url.Contains("gitlab", StringComparison.OrdinalIgnoreCase))
+                return "Icons.GitLab";
+
+            return fallback;
         }
 
         private void CreateContent(Thickness margin, string iconKey, IBrush fill = null)

@@ -137,7 +137,7 @@ namespace SourceGit.Views
 
                         var item = new MenuItem();
                         item.Header = App.Text("Repository.Visit", name);
-                        item.Icon = this.CreateMenuIcon("Icons.Remotes");
+                        item.Icon = this.CreateMenuIcon(BranchTreeNodeIcon.GetRemoteIconKey(addr, "Icons.Remotes"));
                         item.Click += (_, e) =>
                         {
                             Native.OS.OpenBrowser(dupUrl);

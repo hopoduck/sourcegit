@@ -149,6 +149,7 @@
 
         <!-- Message -->
         <v:CommitMessagePresenter Margin="68,0,8,0"
+                                  FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize}"
                                   Foreground="{DynamicResource Brush.FG1}"
                                   FullMessage="{Binding #ThisControl.FullMessage}"
                                   HorizontalAlignment="Stretch"

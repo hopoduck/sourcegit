@@ -140,6 +140,7 @@
                     <v:CommitSubjectPresenter Grid.Column="3"
                                               Height="22"
                                               FontFamily="{DynamicResource Fonts.Default}"
+                                              FontSize="{Binding Source={x:Static vm:Preferences.Instance}, Path=DefaultFontSize}"
                                               CodeFontFamily="{DynamicResource Fonts.Monospace}"
                                               InlineCodeBackground="{DynamicResource Brush.InlineCode}"
                                               InlineCodeForeground="{DynamicResource Brush.InlineCodeFG}"

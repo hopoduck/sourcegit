@@ -64,10 +64,10 @@ namespace SourceGit.Views
         {
             if (DataContext is ViewModels.WorkingCopy { SelectedUnstaged: { Count: > 0 } selection } vm)
             {
+                e.Handled = true;
                 var next = UnstagedChangesView.GetNextChangeWithoutSelection();
                 await vm.StageChangesAsync(selection.Changes, next);
                 UnstagedChangesView.TakeFocus();
-                e.Handled = true;
             }
         }
 
@@ -75,10 +75,10 @@ namespace SourceGit.Views
         {
             if (DataContext is ViewModels.WorkingCopy { SelectedStaged: { Count: > 0 } selection } vm)
             {
+                e.Handled = true;
                 var next = StagedChangesView.GetNextChangeWithoutSelection();
                 await vm.UnstageChangesAsync(selection.Changes, next);
                 StagedChangesView.TakeFocus();
-                e.Handled = true;
             }
         }
 

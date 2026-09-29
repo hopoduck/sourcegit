@@ -321,7 +321,11 @@ namespace SourceGit.Views
                     if (posX < node.Depth * 16 + 16)
                         return;
 
-                    ToggleNodeIsExpanded(node);
+                    // Let the owner (e.g. WorkingCopy) stage/unstage the whole folder; fall back to toggling.
+                    var args = new RoutedEventArgs(ChangeDoubleTappedEvent);
+                    RaiseEvent(args);
+                    if (!args.Handled)
+                        ToggleNodeIsExpanded(node);
                 }
                 else
                 {

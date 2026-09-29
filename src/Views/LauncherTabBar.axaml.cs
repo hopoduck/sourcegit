@@ -200,7 +200,7 @@ namespace SourceGit.Views
 
             // 12 = tabs ScrollViewer margin (6 + 6); 32 = "+" button incl. its margins (8 + 16 + 8).
             var available = Bounds.Width - 12 - 32;
-            var width = Math.Clamp(Math.Floor(available / count), MinTabWidth, MaxTabWidth);
+            var width = Math.Max(Math.Floor(available / count), MinTabWidth);
             TabWidth = width;
 
             // Judge overflow against the layout without scroll buttons. The scroll buttons are wider than
@@ -414,10 +414,9 @@ namespace SourceGit.Views
         }
 
         private const double MinTabWidth = 72;
-        private const double MaxTabWidth = 200;
 
         private bool _isScrollButtonVisible = false;
-        private double _tabWidth = MaxTabWidth;
+        private double _tabWidth = MinTabWidth;
         private readonly Vector _scrollStep = new(64, 0);
         private PointerPressedEventArgs _pressedTabEvent = null;
         private bool _startDragTab = false;

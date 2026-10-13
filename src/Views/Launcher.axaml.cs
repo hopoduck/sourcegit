@@ -261,6 +261,13 @@ namespace SourceGit.Views
                     return;
                 }
 
+                if (e.Key == Key.T && e.KeyModifiers == (cmdKey | KeyModifiers.Shift))
+                {
+                    vm.ReopenClosedTab();
+                    e.Handled = true;
+                    return;
+                }
+
                 if ((isMacOS && e.KeyModifiers.HasFlag(KeyModifiers.Alt) && e.Key == Key.Right) ||
                     (!isMacOS && !e.KeyModifiers.HasFlag(KeyModifiers.Shift) && e.Key == Key.Tab))
                 {
@@ -306,7 +313,7 @@ namespace SourceGit.Views
                                 repo.ShowPopup(new ViewModels.CreateBranch(repo, bc));
                             e.Handled = true;
                             return;
-                        case Key.T when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
+                        case Key.G when e.KeyModifiers.HasFlag(KeyModifiers.Shift):
                             if (repo.CanCreatePopup() && repo.GetSelectedCommitInHistory() is { } tc)
                                 repo.ShowPopup(new ViewModels.CreateTag(repo, tc));
                             e.Handled = true;

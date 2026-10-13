@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -135,6 +136,7 @@ namespace SourceGit.ViewModels
 
             ActiveWorkspace = to;
             to.IsActive = true;
+            _closedTabs.Clear();
 
             foreach (var one in Pages)
                 CloseRepositoryInTab(one, false);
@@ -163,6 +165,65 @@ namespace SourceGit.ViewModels
             var page = new LauncherPage();
             Pages.Add(page);
             ActivePage = page;
+        }
+
+        public void ReopenClosedTab()
+        {
+            while (_closedTabs.Count > 0)
+            {
+                var (node, index) = _closedTabs[^1];
+                _closedTabs.RemoveAt(_closedTabs.Count - 1);
+
+                var alreadyOpened = false;
+                foreach (var one in Pages)
+                {
+                    if (one.Node.Id == node.Id)
+                    {
+                        alreadyOpened = true;
+                        break;
+                    }
+                }
+
+                if (alreadyOpened)
+                    continue;
+
+                OpenRepositoryInTab(node, null);
+
+                // Put the reopened tab back where it was closed.
+                var page = _activePage;
+                if (page.Node.Id != node.Id)
+                    return;
+
+                var curIdx = Pages.IndexOf(page);
+                var toIdx = Math.Min(index, Pages.Count - 1);
+                if (curIdx != toIdx)
+                {
+                    _ignoreIndexChange = true;
+                    Pages.Move(curIdx, toIdx);
+
+                    _activeWorkspace.Repositories.Clear();
+                    foreach (var p in Pages)
+                    {
+                        if (p.Data is Repository r)
+                            _activeWorkspace.Repositories.Add(r.FullPath);
+                    }
+
+                    _ignoreIndexChange = false;
+
+                    // The tab bar drops its selection when the item moves, so select it again.
+                    if (_activePage == page)
+                    {
+                        OnPropertyChanged(nameof(ActivePage));
+                        PostActivePageChanged();
+                    }
+                    else
+                    {
+                        ActivePage = page;
+                    }
+                }
+
+                return;
+            }
         }
 
         public void MoveTab(LauncherPage from, LauncherPage to)
@@ -213,6 +274,7 @@ namespace SourceGit.ViewModels
                 {
                     _activeWorkspace.Repositories.Clear();
                     _activeWorkspace.ActiveIdx = 0;
+                    RememberClosedTab(last.Node, 0);
 
                     if (last.Node.IsUnmanaged)
                         last.Node.SaveMinimalInfo(repo.GitDir);
@@ -254,11 +316,12 @@ namespace SourceGit.ViewModels
 
             _ignoreIndexChange = true;
 
+            // Close from right to left, so reopening restores the tabs from left to right.
             var id = ActivePage.Node.Id;
-            foreach (var one in Pages)
+            for (var i = Pages.Count - 1; i >= 0; i--)
             {
-                if (one.Node.Id != id)
-                    CloseRepositoryInTab(one);
+                if (Pages[i].Node.Id != id)
+                    CloseRepositoryInTab(Pages[i]);
             }
 
             Pages = new AvaloniaList<LauncherPage> { ActivePage };
@@ -502,7 +565,10 @@ namespace SourceGit.ViewModels
             if (page.Data is Repository repo)
             {
                 if (removeFromWorkspace)
+                {
                     _activeWorkspace.Repositories.Remove(repo.FullPath);
+                    RememberClosedTab(page.Node, Pages.IndexOf(page));
+                }
 
                 if (page.Node.IsUnmanaged)
                     page.Node.SaveMinimalInfo(repo.GitDir);
@@ -513,6 +579,14 @@ namespace SourceGit.ViewModels
             page.Popup?.Cleanup();
             page.Popup = null;
             page.Data = null;
+        }
+
+        private void RememberClosedTab(RepositoryNode node, int index)
+        {
+            _closedTabs.RemoveAll(x => x.Node.Id == node.Id);
+            _closedTabs.Add((node, index));
+            if (_closedTabs.Count > MaxClosedTabs)
+                _closedTabs.RemoveAt(0);
         }
 
         private void PostActivePageChanged()
@@ -540,5 +614,8 @@ namespace SourceGit.ViewModels
         private string _title = string.Empty;
         private ICommandPalette _commandPalette;
         private Models.Version _newVersion = null;
+
+        private const int MaxClosedTabs = 20;
+        private readonly List<(RepositoryNode Node, int Index)> _closedTabs = new();
     }
 }

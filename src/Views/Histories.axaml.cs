@@ -1124,7 +1124,7 @@ namespace SourceGit.Views
             var createTag = new MenuItem();
             createTag.Icon = this.CreateMenuIcon("Icons.Tag.Add");
             createTag.Header = App.Text("CreateTag");
-            createTag.Tag = OperatingSystem.IsMacOS() ? "⌘+⇧+T" : "Ctrl+Shift+T";
+            createTag.Tag = OperatingSystem.IsMacOS() ? "⌘+⇧+G" : "Ctrl+Shift+G";
             createTag.Click += (_, e) =>
             {
                 if (repo.CanCreatePopup())

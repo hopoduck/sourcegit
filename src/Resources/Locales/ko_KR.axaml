@@ -500,6 +500,7 @@
   <x:String x:Key="Text.Hotkeys.Global.NewTab" xml:space="preserve">새 탭 만들기</x:String>
   <x:String x:Key="Text.Hotkeys.Global.OpenLocalRepository" xml:space="preserve">로컬 저장소 열기</x:String>
   <x:String x:Key="Text.Hotkeys.Global.OpenPreferences" xml:space="preserve">환경설정 대화상자 열기</x:String>
+  <x:String x:Key="Text.Hotkeys.Global.ReopenClosedTab" xml:space="preserve">닫은 탭 다시 열기</x:String>
   <x:String x:Key="Text.Hotkeys.Global.ShowWorkspaceDropdownMenu" xml:space="preserve">작업 공간 드롭다운 메뉴 열기</x:String>
   <x:String x:Key="Text.Hotkeys.Global.SwitchTab" xml:space="preserve">활성 탭 전환</x:String>
   <x:String x:Key="Text.Hotkeys.Global.SwitchWorkspace" xml:space="preserve">작업 공간 전환</x:String>

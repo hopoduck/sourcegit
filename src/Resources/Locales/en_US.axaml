@@ -562,6 +562,8 @@
   <x:String x:Key="Text.Hotkeys.Repo.CommitAndPush" xml:space="preserve">Commit and push staged changes</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.CommitWithAutoStage" xml:space="preserve">Stage all changes and commit</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.CreateBranch" xml:space="preserve">Create new branch</x:String>
+  <x:String x:Key="Text.Hotkeys.Repo.CreateBranchFromCommit" xml:space="preserve">Create branch from selected commit</x:String>
+  <x:String x:Key="Text.Hotkeys.Repo.CreateTagFromCommit" xml:space="preserve">Create tag on selected commit</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.Fetch" xml:space="preserve">Fetch, starts directly</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.FetchWithOptions" xml:space="preserve">Fetch, opens options</x:String>
   <x:String x:Key="Text.Hotkeys.Repo.GoToChild" xml:space="preserve">Goto child of selected commit</x:String>

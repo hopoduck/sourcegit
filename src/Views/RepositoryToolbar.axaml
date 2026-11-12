@@ -61,8 +61,16 @@
       <Button Classes="icon_button toolbar_button" Tapped="Fetch">
         <ToolTip.Tip>
           <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Fetch}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+            <TextBlock>
+              <Run Text="{DynamicResource Text.Fetch}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Shift+F, macOS=⌘+⇧+F}" FontSize="11" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
+            <TextBlock Classes="small italic" Margin="0,4,0,0" Foreground="{DynamicResource Brush.FG2}">
+              <Run Text="{DynamicResource Text.CtrlClickTip}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Alt+Shift+F, macOS=⌘+⌥+⇧+F}" FontStyle="Normal" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Vertical">
@@ -74,8 +82,16 @@
       <Button Classes="icon_button toolbar_button" Tapped="Pull" IsVisible="{Binding !IsBare}" IsEnabled="{Binding !IsBare}">
         <ToolTip.Tip>
           <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Pull}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+            <TextBlock>
+              <Run Text="{DynamicResource Text.Pull}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Shift+L, macOS=⌘+⇧+L}" FontSize="11" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
+            <TextBlock Classes="small italic" Margin="0,4,0,0" Foreground="{DynamicResource Brush.FG2}">
+              <Run Text="{DynamicResource Text.CtrlClickTip}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Alt+Shift+L, macOS=⌘+⌥+⇧+L}" FontStyle="Normal" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Vertical">
@@ -93,8 +109,16 @@
       <Button Classes="icon_button toolbar_button" Tapped="Push">
         <ToolTip.Tip>
           <StackPanel Orientation="Vertical">
-            <TextBlock Text="{DynamicResource Text.Push}"/>
-            <TextBlock Classes="small italic" Margin="0,4,0,0" Text="{DynamicResource Text.CtrlClickTip}" Foreground="{DynamicResource Brush.FG2}"/>
+            <TextBlock>
+              <Run Text="{DynamicResource Text.Push}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Shift+P, macOS=⌘+⇧+P}" FontSize="11" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
+            <TextBlock Classes="small italic" Margin="0,4,0,0" Foreground="{DynamicResource Brush.FG2}">
+              <Run Text="{DynamicResource Text.CtrlClickTip}"/>
+              <Run Text=" "/>
+              <Run Text="{OnPlatform Ctrl+Alt+Shift+P, macOS=⌘+⌥+⇧+P}" FontStyle="Normal" Foreground="{DynamicResource MenuFlyoutItemKeyboardAcceleratorTextForeground}"/>
+            </TextBlock>
           </StackPanel>
         </ToolTip.Tip>
         <StackPanel Orientation="Vertical">

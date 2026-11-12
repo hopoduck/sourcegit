@@ -36,8 +36,9 @@
 
     <!-- Content -->
     <StackPanel Orientation="Horizontal">
-      <Image Width="200" Height="200"
-             Margin="8,0"
+      <!-- App.ico has no transparent padding, so shrink it to the old visual size and keep the 200px slot. -->
+      <Image Width="164" Height="164"
+             Margin="26,18"
              Source="/App.ico"
              HorizontalAlignment="Center"
              VerticalAlignment="Center"/>

@@ -625,7 +625,6 @@
   <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">모델</x:String>
   <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">사용 가능한 모델 ID 자동 가져오기</x:String>
   <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">이름</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">입력된 값은 환경변수(ENV)에서 API 키를 불러올 이름입니다</x:String>
   <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">서버</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">모양</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">기본 글꼴</x:String>
@@ -687,7 +686,6 @@
   <x:String x:Key="Text.Preferences.Integration" xml:space="preserve">연동</x:String>
   <x:String x:Key="Text.Preferences.Shell" xml:space="preserve">셸/터미널</x:String>
   <x:String x:Key="Text.Preferences.Shell.Args" xml:space="preserve">인수</x:String>
-  <x:String x:Key="Text.Preferences.Shell.Args.Tip" xml:space="preserve">작업 디렉터리는 `.`으로 표시하세요</x:String>
   <x:String x:Key="Text.Preferences.Shell.Path" xml:space="preserve">경로</x:String>
   <x:String x:Key="Text.Preferences.Shell.Type" xml:space="preserve">셸/터미널</x:String>
   <x:String x:Key="Text.PruneRemote" xml:space="preserve">원격 정리</x:String>
@@ -770,6 +768,14 @@
   <x:String x:Key="Text.Repository.FilterCommits.Default" xml:space="preserve">설정 안 함</x:String>
   <x:String x:Key="Text.Repository.FilterCommits.Exclude" xml:space="preserve">커밋 그래프에서 숨기기</x:String>
   <x:String x:Key="Text.Repository.FilterCommits.Include" xml:space="preserve">커밋 그래프에서 필터링</x:String>
+  <x:String x:Key="Text.Repository.FocusOnCurrentBranch" xml:space="preserve">현재 브랜치에 집중
+
+켜면 모든 히스토리 필터가 해제되고,
+현재 브랜치와 그 upstream(있는 경우)에 속한
+커밋만 커밋 그래프에 표시됩니다.
+
+브랜치/태그 히스토리 필터를 직접 추가하면
+자동으로 꺼집니다.</x:String>
   <x:String x:Key="Text.Repository.HistoriesLayout" xml:space="preserve">레이아웃</x:String>
   <x:String x:Key="Text.Repository.HistoriesLayout.Horizontal" xml:space="preserve">수평</x:String>
   <x:String x:Key="Text.Repository.HistoriesLayout.Vertical" xml:space="preserve">수직</x:String>
@@ -998,6 +1004,7 @@
   <x:String x:Key="Text.Worktree.Unlock" xml:space="preserve">잠금 해제</x:String>
   <x:String x:Key="Text.Yes" xml:space="preserve">예</x:String>
   <x:String x:Key="Text.Toolbar.Branch" xml:space="preserve">브랜치</x:String>
+  <x:String x:Key="Text.Toolbar.Focus" xml:space="preserve">포커스</x:String>
   <x:String x:Key="Text.Toolbar.More" xml:space="preserve">더보기</x:String>
   <x:String x:Key="Text.Toolbar.Open" xml:space="preserve">열기</x:String>
 </ResourceDictionary>

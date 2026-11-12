@@ -23,6 +23,36 @@
       <Setter Property="Background" Value="{DynamicResource Brush.Window}"/>
       <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
     </Style>
+
+    <!-- `Button.toolbar_button` does not match ToggleButton, so mirror it here. -->
+    <Style Selector="ToggleButton.toolbar_toggle">
+      <Setter Property="MinWidth" Value="46"/>
+      <Setter Property="Height" Value="40"/>
+      <Setter Property="Padding" Value="6,0"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+      <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+        <Setter Property="Opacity" Value="0.8"/>
+      </Style>
+      <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#18888888"/>
+        <Setter Property="Opacity" Value="1"/>
+      </Style>
+      <Style Selector="^:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#28888888"/>
+        <Setter Property="Opacity" Value="1"/>
+      </Style>
+      <Style Selector="^:checked Path.toolbar_icon">
+        <Setter Property="Fill" Value="{DynamicResource Brush.Accent}"/>
+      </Style>
+    </Style>
   </UserControl.Styles>
 
   <v:WindowCenteredPanel>
@@ -118,9 +148,23 @@
       </Grid>
     </Button>
 
-    <!-- Right: branch + more | open -->
+    <!-- Right: focus + branch + more | open -->
     <Grid ColumnDefinitions="Auto,*,Auto">
       <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+        <ToggleButton Classes="toolbar_toggle"
+                      IsChecked="{Binding FocusOnCurrentBranch, Mode=TwoWay}"
+                      ToolTip.Tip="{DynamicResource Text.Repository.FocusOnCurrentBranch}">
+          <ToggleButton.Styles>
+            <Style Selector="ToolTip">
+              <Setter Property="MaxWidth" Value="400"/>
+            </Style>
+          </ToggleButton.Styles>
+          <StackPanel Orientation="Vertical">
+            <Path Classes="toolbar_icon" Data="{StaticResource Icons.Magic}"/>
+            <TextBlock Classes="toolbar_label" Text="{DynamicResource Text.Toolbar.Focus}"/>
+          </StackPanel>
+        </ToggleButton>
+
         <Button Classes="icon_button toolbar_button" Command="{Binding CreateNewBranch}" HotKey="{OnPlatform Ctrl+B, macOS=⌘+B}">
           <ToolTip.Tip>
             <TextBlock>
